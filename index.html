@@ -1,173 +1,254 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GAMA Post Venta</title>
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #fffaf0;
-      color: #3b2f2a;
-      margin: 0;
-      padding: 0;
-      text-align: center;
-    }
-    header {
-      background-color: #b98b3b;
-      color: white;
-      padding: 15px;
-      font-size: 1.5em;
-      font-weight: bold;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-    }
-    main {
-  padding: 30px;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-    .question-box {
-      background-color: #f2eadf;
-      border: 2px solid #b66b3a;
-      border-radius: 20px;
-      padding: 25px;
-      margin: 20px auto;
-      max-width: 700px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    button {
-      background-color: #b66b3a;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      padding: 10px 20px;
-      margin: 10px;
-      cursor: pointer;
-      font-size: 1em;
-      transition: 0.3s;
-    }
-    button:hover {
-      background-color: #b98b3b;
-    }
-    .hidden {
-      display: none;
-    }
-    #contador {
-      font-size: 1.5em;
-      color: #b66b3a;
-      margin: 20px;
-    }
-    .popup {
-      background: rgba(255,255,255,0.95);
-      border: 2px solid #b98b3b;
-      border-radius: 20px;
-      padding: 25px;
-      width: 300px;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      box-shadow: 0 0 15px rgba(0,0,0,0.2);
-      display: none;
-      z-index: 1000;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GAMA Post Venta – Módulo 4</title>
+<style>
+  body{
+    font-family:"Poppins",sans-serif;
+    background:#fffaf0;
+    color:#3b2f2a;
+    margin:0;
+    padding:0;
+    text-align:center;
+  }
+  header{
+    background:#b98b3b;
+    color:#fff;
+    padding:15px;
+    font-size:1.5em;
+    font-weight:bold;
+    box-shadow:0 2px 5px rgba(0,0,0,.3);
+  }
+  main{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+  }
+  .box{
+    background:#f2eadf;
+    border:2px solid #b66b3a;
+    border-radius:20px;
+    padding:25px;
+    margin:15px;
+    max-width:700px;
+    box-shadow:0 0 10px rgba(0,0,0,.1);
+  }
+  button{
+    background:#b66b3a;
+    color:#fff;
+    border:none;
+    border-radius:10px;
+    padding:10px 20px;
+    margin:8px;
+    cursor:pointer;
+    font-size:1em;
+    transition:.3s;
+  }
+  button:hover{background:#b98b3b;}
+  #contador{
+    font-size:1.4em;
+    color:#b66b3a;
+    margin:10px;
+  }
+  .popup{
+    background:rgba(255,255,255,.95);
+    border:2px solid #b98b3b;
+    border-radius:20px;
+    padding:25px;
+    width:300px;
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    box-shadow:0 0 15px rgba(0,0,0,.2);
+    display:none;
+    z-index:1000;
+  }
+  .hidden{display:none;}
+</style>
 </head>
 <body>
-  <header>🌳 GAMA Post Venta - Módulo 4</header>
+<header>🌳 GAMA Post Venta – Módulo 4</header>
+<main>
+  <p><strong>Magali Sauceda® | Mentora Inmobiliaria | Fundadora de Raíces de Éxito</strong></p>
+  <p>Vender con alma, formar con propósito</p>
+  <div id="contador">Tiempo: 30</div>
 
-  <main>
-    <p><strong>Magali Sauceda® | Mentora Inmobiliaria | Fundadora de Raíces de Éxito</strong></p>
-    <p>Vender con alma, formar con propósito</p>
-    
-    <div id="contador">Tiempo: 30</div>
+  <div class="box" id="q1">
+    <h2>¿Qué es el seguimiento postventa en el ámbito inmobiliario?</h2>
+    <button onclick="check(1,'a')">a) Llamar solo si el cliente se queja</button><br/>
+    <button onclick="check(1,'b')">b) Mantener contacto programado para asegurar satisfacción y futuras ventas</button><br/>
+    <button onclick="check(1,'c')">c) Enviar mensajes sin objetivo definido</button>
+  </div>
 
-    <div class="question-box" id="pregunta1">
-      <h2>¿Qué significa NPS?</h2>
-      <button onclick="verificarRespuesta(1, 'a')">a) Net Promoter Score (mide satisfacción del cliente)</button><br>
-      <button onclick="verificarRespuesta(1, 'b')">b) Nuevo Plan de Servicio</button><br>
-      <button onclick="verificarRespuesta(1, 'c')">c) Nivel de Productividad Semanal</button>
-    </div>
+  <div class="box hidden" id="q2">
+    <h2>¿Qué significa NPS (Net Promoter Score)?</h2>
+    <button onclick="check(2,'a')">a) Mide la probabilidad de que un cliente te recomiende</button><br/>
+    <button onclick="check(2,'b')">b) Nivel Promedio de Servicio</button><br/>
+    <button onclick="check(2,'c')">c) Nuevo Plan de Seguimiento</button>
+  </div>
 
-    <div class="question-box hidden" id="pregunta2">
-      <h2>¿Qué es un pipeline en ventas?</h2>
-      <button onclick="verificarRespuesta(2, 'a')">a) Canal de distribución físico</button><br>
-      <button onclick="verificarRespuesta(2, 'b')">b) Sistema para dar seguimiento a prospectos y clientes</button><br>
-      <button onclick="verificarRespuesta(2, 'c')">c) Base de datos legal</button>
-    </div>
+  <div class="box hidden" id="q3">
+    <h2>¿Qué es un pipeline de ventas?</h2>
+    <button onclick="check(3,'a')">a) Un sistema para visualizar en qué etapa está cada cliente o prospecto</button><br/>
+    <button onclick="check(3,'b')">b) Un documento de escritura pública</button><br/>
+    <button onclick="check(3,'c')">c) Una lista de precios</button>
+  </div>
 
-    <div class="question-box hidden" id="final">
-      <h2>🎉 ¡Felicidades!</h2>
-      <p>Has completado el bloque post-venta. ¡Excelente trabajo!</p>
-      <audio id="aplausos" src="APLAUSOS.mp3"></audio>
-    </div>
+  <div class="box hidden" id="final">
+    <h2>🎉 ¡Felicidades!</h2>
+    <p>Has completado el bloque Post Venta con éxito. ¡Excelente trabajo!</p>
+    <audio id="aplausos" src="APLAUSOS.mp3"></audio>
+  </div>
 
-    <div class="popup" id="popup">
-      <p id="popupText"></p>
-      <button onclick="cerrarPopup()">Continuar</button>
-    </div>
+  <div class="popup" id="popup">
+    <p id="popupText"></p>
+    <button onclick="cerrarPopup()">Continuar</button>
+  </div>
+</main>
+<script>
+let qActual=1,tiempo=30;
+let timer=setInterval(()=>{tiempo--;document.getElementById("contador").textContent="Tiempo: "+tiempo;if(tiempo<=0){clearInterval(timer);pop("⏰ Tiempo agotado",false);}},1000);
+const s={
+  bien:new Audio("BIEN.mp3"),
+  mal:new Audio("NO.mp3"),
+  pop:new Audio("POP.mp3"),
+  tic:new Audio("TIKTACK.mp3")
+};
+s.tic.loop=true;s.tic.volume=.3;s.tic.play();
 
-  </main>
-
-  <script>
-    let preguntaActual = 1;
-    let tiempo = 30;
-    let cronometro = setInterval(actualizarContador, 1000);
-
-    const sonidos = {
-      bien: new Audio("BIEN.mp3"),
-      mal: new Audio("NO.mp3"),
-      pop: new Audio("POP.mp3"),
-      tiktok: new Audio("TIKTACK.mp3")
-    };
-
-    sonidos.tiktok.loop = true;
-    sonidos.tiktok.volume = 0.3;
-    sonidos.tiktok.play();
-
-    function actualizarContador() {
-      const contador = document.getElementById("contador");
-      tiempo--;
-      contador.textContent = "Tiempo: " + tiempo;
-      if (tiempo <= 0) {
-        clearInterval(cronometro);
-        mostrarPopup("⏰ ¡Tiempo agotado! Inténtalo otra vez.", false);
-      }
+function check(num,opt){
+  s.pop.play();
+  const ok=(num===1&&opt==='b')||(num===2&&opt==='a')||(num===3&&opt==='a');
+  if(ok){
+    s.bien.play();
+    pop("✅ Correcto",true);
+    document.getElementById("q"+num).classList.add("hidden");
+    if(document.getElementById("q"+(num+1))){
+      document.getElementById("q"+(num+1)).classList.remove("hidden");
+    }else{
+      document.getElementById("final").classList.remove("hidden");
+      document.getElementById("aplausos").play();
     }
+  }else{
+    s.mal.play();
+    pop("❌ Oh no, vuelve a intentarlo",false);
+  }
+}
 
-    function verificarRespuesta(num, opcion) {
-      sonidos.pop.play();
-      if ((num === 1 && opcion === 'a') || (num === 2 && opcion === 'b')) {
-        sonidos.bien.play();
-        mostrarPopup("✅ ¡Correcto! Muy bien.", true);
-        if (num === 2) {
-          document.getElementById("pregunta2").classList.add("hidden");
-          document.getElementById("final").classList.remove("hidden");
-          document.getElementById("aplausos").play();
-        } else {
-          document.getElementById("pregunta1").classList.add("hidden");
-          document.getElementById("pregunta2").classList.remove("hidden");
-        }
-      } else {
-        sonidos.mal.play();
-        mostrarPopup("❌ Oh no. Vuelve a intentarlo.", false);
-      }
-    }
+function pop(txt){document.getElementById("popupText").textContent=txt;document.getElementById("popup").style.display="block";}
+function cerrarPopup(){document.getElementById("popup").style.display="none";}
+</script>
+  <!-- PARTE 2 -->
+  <div class="box hidden" id="q4">
+    <h2>¿Cuál es el objetivo del cronograma postventa?</h2>
+    <button onclick="check(4,'a')">a) Organizar los contactos con propósito claro y fechas definidas</button><br/>
+    <button onclick="check(4,'b')">b) Llamar cuando te acuerdes</button><br/>
+    <button onclick="check(4,'c')">c) Enviar publicidad masiva</button>
+  </div>
 
-    function mostrarPopup(texto, correcto) {
-      const popup = document.getElementById("popup");
-      const popupText = document.getElementById("popupText");
-      popupText.textContent = texto;
-      popup.style.display = "block";
-    }
+  <div class="box hidden" id="q5">
+    <h2>¿Qué debe buscarse al medir la satisfacción del cliente?</h2>
+    <button onclick="check(5,'a')">a) Saber si recomendaría tus servicios y detectar áreas de mejora</button><br/>
+    <button onclick="check(5,'b')">b) Confirmar que firmó el contrato</button><br/>
+    <button onclick="check(5,'c')">c) Ver si le gusta el color de su casa</button>
+  </div>
 
-    function cerrarPopup() {
-      document.getElementById("popup").style.display = "none";
+  <div class="box hidden" id="q6">
+    <h2>¿Cuándo es buen momento para pedir referidos?</h2>
+    <button onclick="check(6,'a')">a) Cuando el cliente demuestra satisfacción real</button><br/>
+    <button onclick="check(6,'b')">b) Antes de que firme</button><br/>
+    <button onclick="check(6,'c')">c) Solo si te lo pide</button>
+  </div>
+
+  <div class="box hidden" id="q7">
+    <h2>¿Qué herramientas ayudan a dar seguimiento profesional?</h2>
+    <button onclick="check(7,'a')">a) CRM, plantillas y automatizaciones</button><br/>
+    <button onclick="check(7,'b')">b) Mensajes de voz improvisados</button><br/>
+    <button onclick="check(7,'c')">c) Post-its o cuadernos viejos</button>
+  </div>
+
+  <div class="box hidden" id="q8">
+    <h2>¿Por qué es importante identificar nuevas oportunidades?</h2>
+    <button onclick="check(8,'a')">a) Porque los clientes antiguos son más fáciles de fidelizar</button><br/>
+    <button onclick="check(8,'b')">b) Porque no hay que trabajar más</button><br/>
+    <button onclick="check(8,'c')">c) Porque evita tener contactos nuevos</button>
+  </div>
+
+  <div class="box hidden" id="q9">
+    <h2>¿Qué significan las métricas postventa?</h2>
+    <button onclick="check(9,'a')">a) Indicadores que muestran si tu seguimiento está dando resultados</button><br/>
+    <button onclick="check(9,'b')">b) Un formato decorativo</button><br/>
+    <button onclick="check(9,'c')">c) Un trámite del SAT</button>
+  </div>
+
+  <div class="box hidden" id="q10">
+    <h2>¿Qué refleja un cliente promotor según el NPS?</h2>
+    <button onclick="check(10,'a')">a) Que probablemente te recomendará a otros</button><br/>
+    <button onclick="check(10,'b')">b) Que no entendió el servicio</button><br/>
+    <button onclick="check(10,'c')">c) Que está insatisfecho</button>
+  </div>
+
+  <div class="box hidden" id="q11">
+    <h2>¿Qué representa un “pipeline” dentro del CRM?</h2>
+    <button onclick="check(11,'a')">a) El flujo o embudo que muestra las etapas del proceso de venta</button><br/>
+    <button onclick="check(11,'b')">b) Un contrato de exclusividad</button><br/>
+    <button onclick="check(11,'c')">c) Un informe financiero</button>
+  </div>
+
+  <div class="box hidden" id="q12">
+    <h2>¿Qué actitud transmite el mensaje “Vender con alma, formar con propósito”?</h2>
+    <button onclick="check(12,'a')">a) Ética, empatía y profesionalismo</button><br/>
+    <button onclick="check(12,'b')">b) Presión y urgencia</button><br/>
+    <button onclick="check(12,'c')">c) Desinterés</button>
+  </div>
+
+  <div class="box hidden" id="final2">
+    <h2>🎉 ¡Felicidades, Magali!</h2>
+    <p>Completaste todo el módulo Post Venta con 100%.  
+    Eres una asesora de excelencia 🌟</p>
+    <audio id="fanfarrea" src="FANFARREA.mp3"></audio>
+    <audio id="bonus" src="BONUS.mp3"></audio>
+    <script>
+      document.getElementById("fanfarrea").play();
+      document.getElementById("bonus").play();
+    </script>
+  </div>
+
+<script>
+function check(num,opt){
+  s.pop.play();
+  const ok=(num===1&&opt==='b')||(num===2&&opt==='a')||(num===3&&opt==='a')||
+           (num===4&&opt==='a')||(num===5&&opt==='a')||(num===6&&opt==='a')||
+           (num===7&&opt==='a')||(num===8&&opt==='a')||(num===9&&opt==='a')||
+           (num===10&&opt==='a')||(num===11&&opt==='a')||(num===12&&opt==='a');
+  if(ok){
+    s.bien.play();
+    pop("✅ ¡Correcto!",true);
+    document.getElementById("q"+num)?.classList.add("hidden");
+    if(document.getElementById("q"+(num+1))){
+      document.getElementById("q"+(num+1)).classList.remove("hidden");
+    }else{
+      document.getElementById("final2").classList.remove("hidden");
+      document.getElementById("fanfarrea").play();
     }
-  </script>
+  }else{
+    s.mal.play();
+    pop("❌ Incorrecto, repite hasta dominarlo",false);
+  }
+}
+</script>
+
+</main>
+<footer style="background:#b98b3b;color:#fff;padding:10px;">
+  <p>Magali Sauceda® | Mentora Inmobiliaria | Fundadora de Raíces de Éxito</p>
+  <p>Metodología SPIN™ – Sistema de Venta Consultiva Inmobiliaria</p>
+  <p>Tel. 222 394 4303 | WhatsApp 221 591 1476 | Septiembre 2025</p>
+</footer>
 </body>
 </html>
