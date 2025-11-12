@@ -1,135 +1,129 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🌳 GAMA Post Venta</title>
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #fffaf0;
-      color: #3b2f2a;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background-color: #b98b3b;
-      color: white;
-      padding: 15px;
-      font-size: 22px;
-    }
-    main {
-      padding: 20px;
-    }
-    button {
-      background-color: #b66b3a;
-      border: none;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 18px;
-    }
-    button:hover {
-      background-color: #b98b3b;
-    }
-    #popup {
-      display: none;
-      position: fixed;
-      top: 30%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: #f2eadf;
-      border: 2px solid #b98b3b;
-      border-radius: 15px;
-      padding: 20px;
-      z-index: 1000;
-      width: 80%;
-      max-width: 400px;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>🌳 GAMA Post Venta</title>
+<style>
+  body {
+    background-color: #f2eadf;
+    color: #3b2f2a;
+    font-family: "Poppins", sans-serif;
+    text-align: center;
+    padding: 2rem;
+  }
+  h1 { color: #b98b3b; }
+  button {
+    background-color: #b66b3a;
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  button:hover { background-color: #b98b3b; }
+  #popup {
+    display: none;
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fffaf0;
+    border: 2px solid #b66b3a;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+  }
+</style>
 </head>
 <body>
-  <header>🌳 Bienvenida a GAMA Post Venta</header>
 
-  <audio id="musicaFondo" src="música de videojuegos arcade retro-297305.mp3" autoplay loop></audio>
+<h1>🌳 Bienvenida a GAMA Post Venta</h1>
+<p>Escucha las instrucciones y responde cada pregunta hasta alcanzar el 100%.</p>
+<button id="startBtn">🎧 Iniciar Ejercicio</button>
 
-  <main>
-    <h2>💬 Instrucciones</h2>
-    <p>Responde cada pregunta correctamente hasta alcanzar el 100%. Si fallas, recibirás tips y podrás volver a intentar.</p>
+<audio id="musicaFondo" src="música de videojuegos arcade retro-297305.mp3" loop></audio>
+<audio id="bien" src="BIEN.mp3"></audio>
+<audio id="no" src="NO.mp3"></audio>
+<audio id="pop" src="POP.mp3"></audio>
 
-    <button onclick="iniciarJuego()">🎮 Iniciar Juego</button>
+<div id="game" style="display:none;">
+  <h2 id="question"></h2>
+  <div id="answers"></div>
+</div>
 
-    <div id="pregunta" style="margin-top:30px;"></div>
-  </main>
+<div id="popup">
+  <p id="popupText"></p>
+  <button onclick="closePopup()">Continuar</button>
+</div>
 
-  <div id="popup">
-    <p id="popupText"></p>
-    <button onclick="cerrarPopup()">Continuar</button>
-  </div>
+<script>
+const questions = [
+  {
+    q: "¿Qué significa SPIN en ventas?",
+    options: ["Situación, Problema, Implicación, Necesidad", "Saber, Planear, Invertir, Negociar", "Sistema, Proceso, Inversión, Negocio"],
+    correct: 0
+  },
+  {
+    q: "¿Qué mide el NPS?",
+    options: ["Nivel de Promoción y Satisfacción", "Net Promoter Score o Nivel de Recomendación", "Negociación Profesional de Servicio"],
+    correct: 1
+  }
+];
 
-  <script>
-    const preguntas = [
-      { q: "¿Qué significa SPIN?", a: ["Situación, Problema, Implicación, Necesidad"], c: 0 },
-      { q: "¿Qué mide el NPS?", a: ["La satisfacción y recomendación del cliente"], c: 0 },
-      { q: "¿Qué es el pipeline?", a: ["Embudo o flujo de oportunidades de venta"], c: 0 }
-    ];
+let current = 0;
 
-    let i = 0, puntos = 0;
+document.getElementById("startBtn").addEventListener("click", () => {
+  document.getElementById("musicaFondo").play();
+  document.getElementById("startBtn").style.display = "none";
+  document.getElementById("game").style.display = "block";
+  showQuestion();
+});
 
-    function iniciarJuego() {
-      mostrarPregunta();
-      reproducirSonido("NIVEL1.mp3");
-    }
+function showQuestion() {
+  const q = questions[current];
+  document.getElementById("question").textContent = q.q;
+  const answersDiv = document.getElementById("answers");
+  answersDiv.innerHTML = "";
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement("button");
+    btn.textContent = opt;
+    btn.onclick = () => checkAnswer(i);
+    answersDiv.appendChild(btn);
+  });
+}
 
-    function mostrarPregunta() {
-      if (i >= preguntas.length) {
-        mostrarPopup("🎉 ¡Felicidades! Has completado el juego con " + puntos + " puntos. 🌟");
-        reproducirSonido("FANFARREA.mp3");
-        return;
-      }
-      const p = preguntas[i];
-      let opciones = "";
-      p.a.forEach((r, idx) => {
-        opciones += `<button onclick="verificar(${idx})">${r}</button><br>`;
-      });
-      document.getElementById("pregunta").innerHTML = `<h3>${p.q}</h3>${opciones}`;
-    }
+function checkAnswer(i) {
+  document.getElementById("pop").play();
+  const q = questions[current];
+  if (i === q.correct) {
+    document.getElementById("bien").play();
+    showPopup("¡Correcto! 🎉");
+  } else {
+    document.getElementById("no").play();
+    showPopup("Respuesta incorrecta. Vuelve a intentarlo. 😅");
+    return;
+  }
+  current++;
+  if (current < questions.length) {
+    setTimeout(showQuestion, 1000);
+  } else {
+    showPopup("🎊 ¡Felicidades! Completaste el módulo.");
+  }
+}
 
-    function verificar(opcion) {
-      const p = preguntas[i];
-      if (opcion === p.c) {
-        puntos += 33;
-        reproducirSonido("BIEN.mp3");
-        mostrarPopup("✅ ¡Correcto! Avanzas al siguiente nivel.");
-        i++;
-      } else {
-        reproducirSonido("NO.mp3");
-        mostrarPopup("❌ No es correcto. Revisa el material y vuelve a intentar.");
-      }
-    }
+function showPopup(text) {
+  const p = document.getElementById("popup");
+  document.getElementById("popupText").textContent = text;
+  p.style.display = "block";
+}
 
-    function mostrarPopup(texto) {
-      document.getElementById("popupText").textContent = texto;
-      document.getElementById("popup").style.display = "block";
-    }
+function closePopup() {
+  document.getElementById("popup").style.display = "none";
+}
+</script>
 
-    function cerrarPopup() {
-      document.getElementById("popup").style.display = "none";
-      mostrarPregunta();
-    }
-
-    function reproducirSonido(nombre) {
-      const s = new Audio(nombre);
-      s.play();
-    }
-  </script>
-
-  <footer style="background:#b98b3b;color:white;padding:15px;margin-top:40px;">
-    Magali Sauceda® | Mentora Inmobiliaria | Fundadora de Raíces de Éxito <br>
-    Metodología SPIN™ - Sistema de Venta Consultiva Inmobiliaria <br>
-    Tel. 222 394 4303 | WhatsApp 221 591 1476 | Septiembre 2025
-  </footer>
 </body>
 </html>
