@@ -121,8 +121,27 @@ function showPopup(text) {
 }
 
 function closePopup() {
+  // cerrar popup
   document.getElementById("popup").style.display = "none";
+
+  // si quedan preguntas, mostrar la siguiente
+  if (current < questions.length) {
+    showQuestion();
+    return;
+  }
+
+  // si ya terminó todo, reproducir fanfarria y mostrar mensaje final
+  try {
+    const fanfarria = new Audio("FANFARREA.mp3");
+    fanfarria.play();
+  } catch (e) { /* ignore */ }
+
+  const qEl = document.getElementById("question");
+  const aEl = document.getElementById("answers");
+  if (qEl) qEl.textContent = "🎉 ¡Has completado el módulo con éxito!";
+  if (aEl) aEl.innerHTML = "";
 }
+
 </script>
 
 </body>
