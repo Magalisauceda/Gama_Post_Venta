@@ -1,584 +1,135 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🌳 GAMA Post Venta — Raíces de Éxito</title>
 <style>
-:root{
-  --oro:#b98b3b; --cobre:#b66b3a; --beige:#f2eadf; --marfil:#fffaf0;
-  --accent:#3b2f2a; --muted:#6f5f52; --green:#2ecc71; --red:#e74c3c;
-  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #fffaf0;
+  color: #3b2f2a;
+  text-align: center;
+  padding: 20px;
 }
-html,body{height:100%;margin:0;background:var(--beige);color:var(--accent)}
-.wrap{max-width:1100px;margin:18px auto;padding:18px;}
-.card{background:var(--marfil);border:2px solid var(--cobre);border-radius:12px;padding:18px;box-sizing:border-box}
-header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
-h1{margin:0;color:var(--oro);font-size:20px}
-.muted{color:var(--muted);font-size:13px}
-.center{text-align:center}
-button{font-weight:800;border-radius:10px;padding:10px 14px;border:0;cursor:pointer}
-.btn-primary{background:var(--oro);color:#fff;border:0}
-.btn-ghost{background:transparent;border:2px solid var(--cobre);color:var(--cobre);padding:8px 12px}
-.hidden{display:none}
-.row{display:flex;gap:12px;align-items:center}
-.col{flex:1}
-.stat{padding:8px;border-radius:8px;background:#fffaf0;border:2px solid var(--cobre);font-weight:800}
-.question{font-weight:800;color:var(--accent);margin-top:12px}
-.opts{display:grid;gap:10px;margin-top:12px}
-.opt-btn{padding:12px;border-radius:8px;border:2px solid var(--cobre);background:#fff;text-align:left;cursor:pointer;font-weight:800;color:var(--accent)}
-.opt-btn:hover{background:var(--cobre);color:#fff}
-.feedback{margin-top:10px;font-weight:800;min-height:28px}
-.log{margin-top:12px;background:rgba(0,0,0,0.03);padding:10px;border-radius:8px;max-height:160px;overflow:auto;color:var(--muted);font-size:13px}
-.timer{font-weight:900;color:var(--cobre)}
-.commission{font-weight:900;font-size:18px;padding:8px 12px;border-radius:8px;border:2px solid var(--cobre);background:#fffaf0}
-.modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.45);z-index:2000}
-.modal-card{background:#fff;padding:18px;border-radius:10px;max-width:760px;width:94%}
-footer{margin-top:12px;color:var(--muted);font-size:13px;text-align:center}
-.pill{padding:6px 8px;border-radius:8px;background:#fff;border:1px solid rgba(0,0,0,0.04);font-weight:700}
-.good{color:var(--green)}
-.bad{color:var(--red)}
-.badge{display:inline-block;padding:6px 10px;border-radius:20px;border:2px solid var(--cobre);font-weight:600;color:var(--cobre)}
-@media(max-width:720px){ .row{flex-direction:column;align-items:stretch} .col{width:100%} }
+button {
+  background-color: #b98b3b;
+  border: none;
+  padding: 10px 20px;
+  color: white;
+  font-weight: bold;
+  border-radius: 8px;
+  margin: 5px;
+  cursor: pointer;
+}
+button:hover { background-color: #b66b3a; }
+#questionBox {
+  background: #f2eadf;
+  padding: 20px;
+  border-radius: 15px;
+  display: none;
+  margin-top: 20px;
+}
+#popup {
+  background: rgba(0,0,0,0.8);
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  display: none;
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 </style>
 </head>
 <body>
-<div class="wrap">
+<h1>🌳 Bienvenida a GAMA Post Venta</h1>
+<p>Escucha las instrucciones y responde cada pregunta hasta alcanzar el 100%.</p>
+<button id="startBtn">🎧 Iniciar Ejercicio</button>
 
-  <!-- INTRO -->
-  <section id="intro" class="card">
-    <header>
-      <div>
-        <h1>🔑 Simulador SPIN™ Inmobiliario — Raíces de Éxito</h1>
-        <div class="muted">Entrenamiento lúdico-práctico: pregunta mejor, califica leads, maneja objeciones y cierra con ética.</div>
-      </div>
-      <div style="text-align:right">
-        <div class="muted">Comisión objetivo (ejemplo):</div>
-        <div class="commission" id="intro-commission">$100,000</div>
-      </div>
-    </header>
-
-    <div style="display:flex;gap:12px;align-items:flex-start">
-      <div class="col">
-        <p><strong>¿Qué es SPIN™?</strong> SPIN™ significa Situación, Problema, Implicación y Necesidad. Es una técnica de preguntas que te permite entender al cliente y proponer soluciones sin presionarlo.</p>
-        <h3 style="margin-top:12px">Tips rápidos</h3>
-        <ul>
-          <li>Lee la situación antes de responder. Piensa como asesor.</li>
-          <li>Respeta el tiempo (cronómetro). El tick suena los últimos 5s.</li>
-          <li>Si fallas 3 veces seguidas, aparece una Carta Clave (comodín ético).</li>
-        </ul>
-      </div>
-
-      <aside style="width:320px">
-        <div style="padding:12px;border-radius:8px;background:#fff;border:2px solid rgba(0,0,0,0.03)">
-          <div class="muted">Instrucciones</div>
-          <ol style="padding-left:16px">
-            <li>Lee la introducción.</li>
-            <li>Presiona <b>Iniciar</b>.</li>
-            <li>Contesta cada pregunta. Cronómetro visible y sonidos integrados.</li>
-            <li>Al final verás feedback detallado por SPIN™.</li>
-          </ol>
-        </div>
-
-        <div style="margin-top:12px;text-align:center">
-          <button id="startBtn" class="btn-primary">✨ He terminado de leer, ¡quiero empezar!</button>
-        </div>
-
-        <div style="margin-top:12px;font-size:13px;color:var(--muted)">
-          <div style="margin-top:6px">
-            <strong>Firma:</strong><br>
-            Magali Sauceda® | Mentora Inmobiliaria | Fundadora de Raíces de Éxito <br>
-            Vender con alma, formar con propósito — Tel. 222 394 4303 | WhatsApp 221 591 1476
-          </div>
-        </div>
-      </aside>
-    </div>
-  </section>
-
-  <!-- GAME -->
-  <section id="game" class="card hidden" aria-live="polite">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
-      <div>
-        <div id="phaseTitle" style="font-weight:900;color:var(--oro);font-size:18px">Fase</div>
-        <div id="phaseSub" class="muted">Descripción</div>
-      </div>
-      <div class="row" style="align-items:center">
-        <div class="stat">Comisión: <span id="commissionDisp">$0</span></div>
-        <div class="timer" id="timerDisp">00:20</div>
-      </div>
-    </div>
-
-    <div class="question" id="questionText">Pregunta aquí</div>
-
-    <div class="opts" id="optionsWrap" role="group" aria-labelledby="questionText"></div>
-
-    <div class="feedback" id="feedbackArea"></div>
-
-    <div style="display:flex;gap:10px;align-items:center;margin-top:12px">
-      <button id="nextBtn" class="btn-primary" disabled>Siguiente ➡️</button>
-      <button id="forceCardBtn" class="btn-ghost">🎴 Carta Clave</button>
-      <div style="flex:1"></div>
-      <div class="muted" id="progressText">Pregunta 0/0</div>
-    </div>
-
-    <div class="log" id="logArea" aria-live="polite"></div>
-
-    <footer style="margin-top:12px">
-      Magali Sauceda® | Mentora Inmobiliaria | Fundadora de Raíces de Éxito — Metodología SPIN™
-    </footer>
-  </section>
-
-  <!-- CARTA CLAVE MODAL -->
-  <div id="cardModal" class="modal hidden" aria-hidden="true">
-    <div class="modal-card">
-      <h3>🎴 Carta Clave — Acción Ética</h3>
-      <div id="cardText" style="font-weight:800;color:var(--accent)"></div>
-      <div id="cardOpts" style="display:grid;gap:8px;margin-top:10px"></div>
-      <div style="text-align:right;margin-top:12px">
-        <button id="closeCard" class="btn-ghost">Cerrar</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- FINAL MODAL -->
-  <div id="finalModal" class="modal hidden" aria-hidden="true">
-    <div class="modal-card">
-      <h2 id="finalTitle">🏁 Resultado del Simulador</h2>
-      <div id="finalSummary" style="margin-top:8px"></div>
-
-      <h3 style="margin-top:12px">Detalle por categoría SPIN™</h3>
-      <div id="spinStats" style="margin-top:6px"></div>
-
-      <h3 style="margin-top:12px">Preguntas falladas (aprende de ellas)</h3>
-      <div id="missedList" style="margin-top:8px;max-height:240px;overflow:auto"></div>
-
-      <div style="margin-top:12px;text-align:right">
-        <button id="continueBtnDefault" class="btn-primary hidden">Continuar</button>
-        <button id="restartBtn" class="btn-primary">🔁 Volver a Entrenar</button>
-      </div>
-    </div>
-  </div>
-
+<div id="questionBox">
+  <h2 id="questionText"></h2>
+  <div id="options"></div>
 </div>
 
-<!-- Audios (usar los archivos que ya subiste al repo) -->
-<audio id="bgMusic" src="música de videojuegos arcade retro-297305.mp3" loop preload="auto"></audio>
-<audio id="tickSnd" src="TIKTACK.mp3" preload="auto"></audio>
-<audio id="popSnd" src="POP.mp3" preload="auto"></audio>
-<audio id="goodSnd" src="BIEN.mp3" preload="auto"></audio>
-<audio id="badSnd" src="NO.mp3" preload="auto"></audio>
-<audio id="fanfareSnd" src="FANFARREA.mp3" preload="auto"></audio>
-<audio id="aplausosSnd" src="APLAUSOS.mp3" preload="auto"></audio>
-<audio id="bonusSnd" src="BONUS.mp3" preload="auto"></audio>
+<div id="popup">
+  <p id="popupText"></p>
+  <button onclick="closePopup()">Continuar</button>
+</div>
 
 <script>
-/* ---------- Config & data ---------- */
-const TOTAL_COMMISSION = 100000;
-const PHASES = [
-  {id:'basico', title:'Fase 1 — SPIN™ Básico', desc:'Identifica S/P/I/N', time:20, count:8},
-  {id:'captacion', title:'Fase 2 — Captación & Leads', desc:'Perfilamiento y calificación', time:18, count:10},
-  {id:'cierres', title:'Fase 3 — Objeciones & Cierres', desc:'Precierres y cierres consultivos', time:15, count:12}
+const questions = [
+  {
+    text: "¿Qué significa SPIN en ventas?",
+    options: ["Situación, Problema, Implicación, Necesidad", "Saber, Planear, Invertir, Negociar", "Sistema, Proceso, Inversión, Negocio"],
+    correct: 0
+  },
+  {
+    text: "¿Qué mide el NPS?",
+    options: ["Nivel de Promoción y Satisfacción", "Net Promoter Score o Nivel de Recomendación", "Negociación Profesional de Servicio"],
+    correct: 1
+  },
+  {
+    text: "¿Qué es un pipeline?",
+    options: ["Embudo de ventas que muestra el progreso de cada cliente", "Una lista de propiedades", "Un contrato de exclusividad"],
+    correct: 0
+  }
 ];
 
-const BANK = [
-  {text:'¿La propiedad que busca es para vivir, invertir o para alguien más?', options:['Vivir','Invertir','Para otro'], correct:'Vivir', type:'S', explain:'Propósito = Situación.'},
-  {text:'¿Cuál es el presupuesto total que tiene considerado para esta adquisición?', options:['Rango definido','No tiene claro','Puede negociar'], correct:'Rango definido', type:'S', explain:'Presupuesto = Situación.'},
-  {text:'¿Para cuándo le gustaría concretar la compra o mudanza?', options:['Este mes','En 6 meses','Indefinido'], correct:'Este mes', type:'S', explain:'Horizonte = Situación.'},
-  {text:'¿Tiene ya recursos disponibles para el enganche, escrituración y gastos extras?', options:['Sí, recursos propios','No, necesita financiamiento','Parcialmente'], correct:'Sí, recursos propios', type:'S', explain:'Capacidad = Situación.'},
-  {text:'¿Cuál ha sido la mayor dificultad o frustración que ha encontrado en su búsqueda hasta ahora?', options:['No encontrar oferta','Problemas legales','Nada'], correct:'No encontrar oferta', type:'P', explain:'Dolor actual = Problema.'},
-  {text:'¿Por qué cree que no se ha cerrado venta/renta?', options:['Precio','Documentos','Mala publicidad'], correct:'Precio', type:'P', explain:'Obstáculo = Problema.'},
-  {text:'¿Qué pasaría si la propiedad no se vende en los próximos 3 meses?', options:['Gastos continuos','Nada grave','La venderá más caro luego'], correct:'Gastos continuos', type:'I', explain:'Impacto financiero = Implicación.'},
-  {text:'¿Qué necesitas para sentirte cómodo/a con el proceso?', options:['Transparencia','Tiempo libre','Menos visitas'], correct:'Transparencia', type:'N', explain:'Confianza = Necesidad.'},
-  {text:'¿Cuándo es buen momento para solicitar referidos?', options:['Cuando el cliente demuestra satisfacción real','Antes de la firma','Al primer contacto sin medir satisfacción'], correct:'Cuando el cliente demuestra satisfacción real', type:'N', explain:'Pedir referidos a promotores maximiza éxito.'},
-  {text:'¿Qué herramienta facilita el seguimiento organizado?', options:['CRM con plantillas y automatizaciones','Notas aisladas en papel','Mensajes improvisados en chats'], correct:'CRM con plantillas y automatizaciones', type:'N', explain:'CRM asegura consistencia.'},
-  {text:'Cliente: “Lo voy a pensar.” ∟Pregunta: “¿Qué información específica necesitas para tomar la decisión ahora?”', options:['Detalles financieros','No quiere decidir','Solo curiosidad'], correct:'Detalles financieros', type:'N', explain:'Convertir indecisión en necesidad.'},
-  {text:'¿Qué tan importante es para ti el seguimiento personalizado durante el proceso?', options:['Muy importante','Poco importante','Nada'], correct:'Muy importante', type:'N', explain:'Acompañamiento = Necesidad.'},
-  {text:'¿La documentación está en regla (Escrituras, predial, agua)?', options:['Sí','Parcial','No'], correct:'Sí', type:'S', explain:'Estado legal = Situación.'},
-  {text:'¿Existen adeudos pendientes?', options:['Sí','No','Parcialmente'], correct:'Sí', type:'P', explain:'Riesgo financiero = Problema.'},
-  {text:'¿Qué consecuencias económicas tendría no planear los impuestos correctamente al vender?', options:['Gasto adicional','Nada','Beneficio'], correct:'Gasto adicional', type:'I', explain:'Impacto fiscal = Implicación.'},
-  {text:'¿Qué tan importante es la ubicación para tu decisión?', options:['Clave','Poco','Nada'], correct:'Clave', type:'S', explain:'Ubicación = Situación.'},
-  {text:'¿Estaría dispuesto a realizar ajustes si hay una oferta cercana al cierre?', options:['Sí','No','Depende'], correct:'Sí', type:'N', explain:'Flexibilidad = Necesidad.'},
-  {text:'¿Qué pasaría si no logra mudarse cuando planea?', options:['Perder oportunidades','Nada','Esperar'], correct:'Perder oportunidades', type:'I', explain:'Implicación de no actuar.'}
-];
+let current = 0;
 
-const CARD_POOL = [
-  {text:'Un lead apartó propiedad y no le explicaste la penalización de 15 días. ¿Qué haces?', A:'Le explicas y confirmas por escrito', B:'No lo aclaras', C:'Pides a tu gerente que lo haga', correct:'A', explain:'Explicar condiciones evita reclamos.'},
-  {text:'Registraste al vendedor como “soltero” pero está casado; el notario detiene la operación. ¿Qué haces?', A:'Corriges, informas y rehaces documentos', B:'Ignoras y que el notario lo ajuste', C:'Pides al cliente firmar sin corregir', correct:'A', explain:'Precisión legal evita cancelaciones.'},
-  {text:'Dijiste que tenías un comprador para obtener la exclusiva y no lo tenías. ¿Qué haces?', A:'Asumes responsabilidad y rectificas', B:'Mantienes la versión', C:'Culpas al equipo', correct:'A', explain:'Honestidad protege reputación.'},
-  {text:'Olvidaste explicar penalizaciones del apartado y el cliente reclama. ¿Qué haces?', A:'Explicas disculpándote y ofreces solución', B:'Dices que él debía leer', C:'Ignoras', correct:'A', explain:'Remediar aumenta confianza.'}
-];
-
-/* ---------- Estado y UI refs ---------- */
-let state = { phaseIndex:0, questionSets:[], currentIndex:0, commission:0, perQuestion:0, wrongStreak:0, stats:{S:{ok:0,total:0},P:{ok:0,total:0},I:{ok:0,total:0},N:{ok:0,total:0}}, missed:[] };
-
-const startBtn = document.getElementById('startBtn');
-const introSec = document.getElementById('intro');
-const gameCard = document.getElementById('game');
-const phaseTitle = document.getElementById('phaseTitle');
-const phaseSub = document.getElementById('phaseSub');
-const questionText = document.getElementById('questionText');
-const optionsWrap = document.getElementById('optionsWrap');
-const feedbackArea = document.getElementById('feedbackArea');
-const nextBtn = document.getElementById('nextBtn');
-const forceCardBtn = document.getElementById('forceCardBtn');
-const timerDisp = document.getElementById('timerDisp');
-const commissionDisp = document.getElementById('commissionDisp');
-const progressText = document.getElementById('progressText');
-const logArea = document.getElementById('logArea');
-const cardModal = document.getElementById('cardModal');
-const cardText = document.getElementById('cardText');
-const cardOpts = document.getElementById('cardOpts');
-const closeCard = document.getElementById('closeCard');
-const finalModal = document.getElementById('finalModal');
-const finalTitle = document.getElementById('finalTitle');
-const finalSummary = document.getElementById('finalSummary');
-const spinStats = document.getElementById('spinStats');
-const missedList = document.getElementById('missedList');
-const restartBtn = document.getElementById('restartBtn');
-const continueBtnDefault = document.getElementById('continueBtnDefault');
-
-/* ---------- Audio (WebAudio tones + files) ---------- */
-let audioCtx = null;
-function ensureAudio(){ if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-function playTone(freq,type='sine',dur=0.12,vol=0.08){
-  try{
-    ensureAudio();
-    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-    o.type = type; o.frequency.value = freq; o.connect(g); g.connect(audioCtx.destination);
-    g.gain.setValueAtTime(vol, audioCtx.currentTime);
-    o.start(); o.stop(audioCtx.currentTime + dur);
-  }catch(e){}
-}
-function playCorrect(){ playTone(880,'sine',0.12,0.12); }
-function playWrong(){ playTone(220,'square',0.28,0.18); }
-function playTick(){ playTone(1200,'square',0.03,0.04); }
-function playFanfare(){ playTone(900,'sine',0.20,0.12); setTimeout(()=>playTone(1200,'sine',0.20,0.12),160); }
-
-/* Audio elements for files */
-const bgMusic = document.getElementById('bgMusic');
-const tickSnd = document.getElementById('tickSnd');
-const popSnd = document.getElementById('popSnd');
-const goodSnd = document.getElementById('goodSnd');
-const badSnd = document.getElementById('badSnd');
-const fanfareSnd = document.getElementById('fanfareSnd');
-const aplausosSnd = document.getElementById('aplausosSnd');
-const bonusSnd = document.getElementById('bonusSnd');
-bgMusic.volume = 0.55; tickSnd.volume = 0.6; goodSnd.volume = 0.9; badSnd.volume = 0.9;
-
-/* ---------- Helpers ---------- */
-function formatMoney(n){ return '$' + Math.round(n).toLocaleString('es-MX'); }
-function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
-function pick(arr,n){ const c=arr.slice(); shuffle(c); return c.slice(0,n); }
-
-/* Prepare game */
-function prepareGame(){
-  state.questionSets = [];
-  const bankCopy = BANK.slice();
-  shuffle(bankCopy);
-  state.questionSets[0] = pick(bankCopy, PHASES[0].count);
-  state.questionSets[1] = pick(bankCopy, PHASES[1].count);
-  state.questionSets[2] = pick(bankCopy, PHASES[2].count);
-  const totalQ = PHASES.reduce((s,p)=>s+p.count,0);
-  state.perQuestion = Math.round(TOTAL_COMMISSION / totalQ);
-  state.commission = 0;
-  commissionDisp.textContent = formatMoney(state.commission);
-  state.stats = {S:{ok:0,total:0},P:{ok:0,total:0},I:{ok:0,total:0},N:{ok:0,total:0}};
-  state.missed = [];
-  state.wrongStreak = 0;
-  progressText.textContent = `Pregunta 0/0`;
+function startGame() {
+  current = 0;
+  document.getElementById("startBtn").style.display = "none";
+  document.getElementById("questionBox").style.display = "block";
+  showQuestion();
 }
 
-/* Start */
-startBtn.addEventListener('click',()=>{
-  try{ ensureAudio(); }catch(e){}
-  // activar audio de archivos y reproducir música
-  bgMusic.play().catch(()=>{ /* navegador puede bloquear hasta interacción */ });
-  prepareGame();
-  introSec.classList.add('hidden');
-  gameCard.classList.remove('hidden');
-  state.phaseIndex = 0; state.currentIndex = 0;
-  loadPhase(state.phaseIndex);
-});
-
-/* Phase loader */
-let qTimer = null;
-let timeLeft = 0;
-function loadPhase(idx){
-  const ph = PHASES[idx];
-  phaseTitle.textContent = ph.title;
-  phaseSub.textContent = ph.desc;
-  state.currentIndex = 0;
-  updateProgress();
-  renderQuestion();
-}
-
-/* Render question */
-function renderQuestion(){
-  clearTimer();
-  nextBtn.disabled = true;
-  feedbackArea.textContent = '';
-  const q = state.questionSets[state.phaseIndex][state.currentIndex];
-  if(!q){ finishPhase(); return; }
-  questionText.textContent = q.text;
-  optionsWrap.innerHTML = '';
-  const opts = q.options.slice(); shuffle(opts);
-  opts.forEach(opt=>{
-    const b = document.createElement('button');
-    b.className = 'opt-btn';
-    b.textContent = opt;
-    b.onclick = ()=> handleAnswer(opt,q);
-    optionsWrap.appendChild(b);
+function showQuestion() {
+  const q = questions[current];
+  document.getElementById("questionText").textContent = q.text;
+  const opts = document.getElementById("options");
+  opts.innerHTML = "";
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement("button");
+    btn.textContent = opt;
+    btn.onclick = () => checkAnswer(i);
+    opts.appendChild(btn);
   });
-  timeLeft = PHASES[state.phaseIndex].time;
-  timerDisp.textContent = '00:' + String(timeLeft).padStart(2,'0');
-  qTimer = setInterval(()=>{
-    timeLeft--;
-    timerDisp.textContent = '00:' + String(timeLeft).padStart(2,'0');
-    if(timeLeft <= 5 && timeLeft > 0){
-      // sonido tick local preferible a WebAudio para consistencia
-      tickSnd.currentTime = 0; tickSnd.play().catch(()=>playTick());
-    }
-    if(timeLeft <= 0) { clearTimer(); handleTimeout(); }
-  },1000);
 }
 
-/* Handle answer */
-function handleAnswer(choice,q){
-  clearTimer();
-  Array.from(document.querySelectorAll('.opt-btn')).forEach(b=>b.disabled=true);
-  // sonido popup
-  popSnd.currentTime = 0; popSnd.play().catch(()=>{});
-  const correct = choice === q.correct;
-  state.stats[q.type].total++;
-  if(correct) state.stats[q.type].ok++;
-  if(correct){
-    goodSnd.currentTime = 0; goodSnd.play().catch(()=>playCorrect());
-    state.commission += state.perQuestion;
-    feedbackArea.innerHTML = `<span class="good">✅ Correcto! +${formatMoney(state.perQuestion)}</span>`;
-    pushLog(`Correcto — +${formatMoney(state.perQuestion)} — (${q.type})`);
-    animateCommission('up', state.perQuestion);
-    state.wrongStreak = 0;
+function checkAnswer(i) {
+  const q = questions[current];
+  if (i === q.correct) {
+    showPopup("✅ ¡Correcto! Excelente trabajo.");
   } else {
-    badSnd.currentTime = 0; badSnd.play().catch(()=>playWrong());
-    state.commission = Math.max(0, state.commission - state.perQuestion);
-    feedbackArea.innerHTML = `<span class="bad">❌ Incorrecto -${formatMoney(state.perQuestion)}</span> — Respuesta: <b>${q.correct}</b>`;
-    pushLog(`Incorrecto — -${formatMoney(state.perQuestion)} — Correcto: ${q.correct} (${q.type})`);
-    animateCommission('down', state.perQuestion);
-    state.wrongStreak++;
-    state.missed.push({q:q.text, expected:q.correct, type:q.type, explain:q.explain, phase:PHASES[state.phaseIndex].title});
+    showPopup("❌ Respuesta incorrecta. Intenta de nuevo.");
+    return;
   }
-  commissionDisp.textContent = formatMoney(state.commission);
-  nextBtn.disabled = false;
-  if(state.wrongStreak >= 3) setTimeout(()=> showCard(false), 600);
-}
-
-/* Timeout */
-function handleTimeout(){
-  badSnd.currentTime = 0; badSnd.play().catch(()=>playWrong());
-  state.commission = Math.max(0, state.commission - state.perQuestion);
-  feedbackArea.innerHTML = `<span class="bad">⏱️ Tiempo agotado -${formatMoney(state.perQuestion)}</span>`;
-  pushLog(`Tiempo agotado — -${formatMoney(state.perQuestion)}`);
-  animateCommission('down', state.perQuestion);
-  commissionDisp.textContent = formatMoney(state.commission);
-  state.wrongStreak++;
-  nextBtn.disabled = false;
-  if(state.wrongStreak >= 3) setTimeout(()=> showCard(false), 700);
-}
-
-/* Next */
-nextBtn.addEventListener('click',()=>{
-  state.currentIndex++;
-  if(state.currentIndex >= state.questionSets[state.phaseIndex].length){
-    finishPhase();
+  current++;
+  if (current < questions.length) {
+    setTimeout(() => {
+      document.getElementById("popup").style.display = "none";
+      showQuestion();
+    }, 1000);
   } else {
-    updateProgress();
-    renderQuestion();
-  }
-});
-
-/* Update progress */
-function updateProgress(){
-  const total = state.questionSets[state.phaseIndex].length || 0;
-  progressText.textContent = `Pregunta ${Math.min(state.currentIndex+1,total)}/${total}`;
-}
-
-/* Log */
-function pushLog(msg){
-  const d = document.createElement('div');
-  d.innerHTML = `<small class="muted">${new Date().toLocaleTimeString()}</small> — ${msg}`;
-  logArea.prepend(d);
-}
-
-/* Animate commission */
-function animateCommission(dir,amount){
-  commissionDisp.style.borderColor = dir==='up' ? 'var(--green)' : 'var(--red)';
-  commissionDisp.style.background = dir==='up' ? 'rgba(46,204,113,0.06)' : 'rgba(231,76,60,0.04)';
-  commissionDisp.innerHTML = (dir==='up' ? `<span class="good">+${formatMoney(amount)}</span>` : `<span class="bad">-${formatMoney(amount)}</span>`) + `<div style="font-size:12px;color:var(--muted)">Total: ${formatMoney(state.commission)}</div>`;
-  setTimeout(()=>{ commissionDisp.style.borderColor = 'var(--cobre)'; commissionDisp.style.background = '#fffaf0'; commissionDisp.innerHTML = formatMoney(state.commission); },900);
-}
-
-/* Clear timer */
-function clearTimer(){ if(qTimer){ clearInterval(qTimer); qTimer = null; } }
-
-/* Carta Clave */
-forceCardBtn.addEventListener('click', ()=>{ if(!cardModal.classList.contains('hidden')) return; showCard(true); });
-closeCard.addEventListener('click', ()=>{ cardModal.classList.add('hidden'); cardModal.setAttribute('aria-hidden','true'); });
-
-function showCard(forced){
-  const card = CARD_POOL[Math.floor(Math.random()*CARD_POOL.length)];
-  cardText.textContent = card.text;
-  cardOpts.innerHTML = '';
-  ['A','B','C'].forEach(letter=>{
-    const b = document.createElement('button');
-    b.className = 'opt-btn';
-    b.style.display='block';
-    b.textContent = `${letter}. ${card[letter]}`;
-    b.onclick = ()=> resolveCard(letter, card, forced);
-    cardOpts.appendChild(b);
-  });
-  cardModal.classList.remove('hidden');
-  cardModal.setAttribute('aria-hidden','false');
-}
-
-/* Resolve card */
-function resolveCard(choice, card, forced){
-  cardModal.classList.add('hidden');
-  cardModal.setAttribute('aria-hidden','true');
-  const penalty = Math.round(TOTAL_COMMISSION * 0.18);
-  const recover = Math.round(TOTAL_COMMISSION * 0.22);
-  if(choice === card.correct){
-    goodSnd.currentTime = 0; goodSnd.play().catch(()=>playCorrect());
-    state.commission = Math.min(TOTAL_COMMISSION, state.commission + recover);
-    pushLog(`🎴 Carta Clave: correcta — recuperaste ${formatMoney(recover)}.`);
-  } else {
-    badSnd.currentTime = 0; badSnd.play().catch(()=>playWrong());
-    state.commission = Math.max(0, state.commission - penalty);
-    pushLog(`🎴 Carta Clave: incorrecta — pierdes ${formatMoney(penalty)}.`);
-  }
-  commissionDisp.textContent = formatMoney(state.commission);
-  state.wrongStreak = 0;
-}
-
-/* FIN FASE — única y corregida */
-function finishPhase() {
-  clearTimer();
-  playFanfare();
-  pushLog(`Fase completada: ${PHASES[state.phaseIndex].title}`);
-
-  // Si aún hay más fases, preparar para continuar
-  if (state.phaseIndex < PHASES.length - 1) {
-    const next = state.phaseIndex + 1;
-    const title = `${PHASES[state.phaseIndex].title} completada`;
-    const msg = `Comisión actual: ${formatMoney(state.commission)}.<br><br>¿Deseas continuar a <b>${PHASES[next].title}</b>?`;
-
-    // limpiar contenido y mostrar modal intermedio
-    finalSummary.innerHTML = '';
-    spinStats.innerHTML = '';
-    missedList.innerHTML = '';
-
-    finalModal.classList.remove('hidden');
-    finalModal.setAttribute('aria-hidden', 'false');
-    finalTitle.textContent = title;
-    finalSummary.innerHTML = `<p class="muted">${msg}</p>`;
-
-    continueBtnDefault.classList.remove('hidden');
-    restartBtn.classList.add('hidden');
-
-    // Conectar evento Continue
-    continueBtnDefault.onclick = () => {
-      continueBtnDefault.classList.add('hidden');
-      restartBtn.classList.remove('hidden');
-      finalModal.classList.add('hidden');
-      finalModal.setAttribute('aria-hidden','true');
-      state.phaseIndex = next;
-      state.currentIndex = 0;
-      updateProgress();
-      loadPhase(state.phaseIndex);
-    };
-
-  } else {
-    // final summary
-    finalizeGame();
+    showPopup("🎉 ¡Felicidades! Completaste el módulo.");
   }
 }
 
-/* Finalizar juego -> resumen completo */
-function finalizeGame(){
-  clearTimer();
-  // limpiar y rellenar
-  finalSummary.innerHTML = '';
-  spinStats.innerHTML = '';
-  missedList.innerHTML = '';
-
-  finalModal.classList.remove('hidden');
-  finalModal.setAttribute('aria-hidden','false');
-  finalTitle.textContent = '🏁 Resultado final';
-
-  const totalCorrect = state.stats.S.ok + state.stats.P.ok + state.stats.I.ok + state.stats.N.ok;
-  const totalQ = PHASES.reduce((s,p)=>s+p.count,0);
-  const pct = totalQ ? Math.round((totalCorrect / totalQ) * 100) : 0;
-
-  finalSummary.innerHTML = `<p>Comisión final acumulada: <b>${formatMoney(state.commission)}</b></p>
-    <p>Aciertos: <b>${totalCorrect}/${totalQ} (${pct}%)</b></p>
-    <div class="muted">A continuación verás detalle por categoría y recomendaciones.</div>`;
-
-  ['S','P','I','N'].forEach(k=>{
-    const ok = state.stats[k].ok || 0;
-    const tot = state.stats[k].total || 0;
-    const pctk = tot ? Math.round((ok/tot)*100) : 100;
-    const label = k==='S'?'Situación':k==='P'?'Problema':k==='I'?'Implicación':'Necesidad';
-    const d = document.createElement('div');
-    d.style.marginTop='6px';
-    d.innerHTML = `<span class="pill">${label}</span> <span style="margin-left:8px">${ok}/${tot} — ${pctk}%</span>`;
-    spinStats.appendChild(d);
-  });
-
-  if(state.missed.length===0){
-    missedList.innerHTML = '<div class="good">¡Excelente! No tuviste preguntas falladas.</div>';
-    aplausosSnd.currentTime = 0; aplausosSnd.play().catch(()=>playFanfare());
-  } else {
-    state.missed.forEach(m=>{
-      const el = document.createElement('div');
-      el.style.marginBottom='10px';
-      el.innerHTML = `<div style="font-weight:900;color:var(--accent)">${m.q}</div>
-        <div class="muted">Esperado: <b>${m.expected}</b> — Tipo: <b>${m.type}</b></div>
-        <div style="margin-top:6px">${m.explain}</div>
-        <div class="muted" style="font-size:12px">Fase: ${m.phase}</div>`;
-      missedList.appendChild(el);
-    });
-    bonusSnd.currentTime = 0; bonusSnd.play().catch(()=>playFanfare());
-  }
-
-  continueBtnDefault.classList.add('hidden');
-  restartBtn.classList.remove('hidden');
+function showPopup(text) {
+  const p = document.getElementById("popup");
+  document.getElementById("popupText").textContent = text;
+  p.style.display = "block";
 }
 
-/* Reiniciar desde modal final */
-restartBtn.addEventListener('click',()=>{
-  finalModal.classList.add('hidden');
-  finalModal.setAttribute('aria-hidden','true');
-  introSec.classList.remove('hidden');
-  gameCard.classList.add('hidden');
-  commissionDisp.textContent = formatMoney(0);
-});
-
-/* UTILS: loadPhase and updateProgress wrapper (safe) */
-function loadPhase(idx){
-  const ph = PHASES[idx];
-  phaseTitle.textContent = ph.title;
-  phaseSub.textContent = ph.desc;
-  state.currentIndex = 0;
-  updateProgress();
-  renderQuestion();
-}
-function updateProgress(){
-  const total = (state.questionSets[state.phaseIndex] || []).length;
-  progressText.textContent = `Pregunta ${Math.min(state.currentIndex+1,total)}/${total}`;
+function closePopup() {
+  document.getElementById("popup").style.display = "none";
+  if (current < questions.length) showQuestion();
 }
 
-/* ensure audio unlocked on user gesture */
-document.addEventListener('click', function unlock(){ try{ ensureAudio(); }catch(e){} document.removeEventListener('click', unlock); }, {once:true});
-
+document.getElementById("startBtn").onclick = startGame;
 </script>
 </body>
 </html>
