@@ -1,149 +1,245 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>🌳 GAMA Post Venta</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>GAMA · Postventa (Módulo 4)</title>
 <style>
-  body {
-    background-color: #f2eadf;
-    color: #3b2f2a;
-    font-family: "Poppins", sans-serif;
-    text-align: center;
-    padding: 2rem;
-  }
-  h1 { color: #b98b3b; }
-  button {
-    background-color: #b66b3a;
-    color: white;
-    border: none;
-    padding: 1rem 2rem;
-    border-radius: 12px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: 0.3s;
-    #answers button { display: block; margin: 10px auto; width: 80%; 
-  }
-  button:hover { background-color: #b98b3b; }
-  #popup {
-    display: none;
-    position: fixed;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #fffaf0;
-    border: 2px solid #b66b3a;
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.2);
-  }
+:root{
+  --oro:#b98b3b; --cobre:#b66b3a; --beige:#f2eadf; --marfil:#fffaf0; --accent:#3b2f2a; --muted:#6f5f52;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; font-family:Inter,Arial,Helvetica,sans-serif;
+  background:var(--marfil); color:var(--accent); min-height:100vh; display:flex; flex-direction:column;
+}
+header{background:linear-gradient(90deg,var(--oro),var(--cobre)); color:#fff; padding:14px 18px; font-weight:700}
+.container{width:100%; max-width:980px; margin:18px auto; padding:12px}
+.card{background:var(--beige); border-radius:14px; padding:18px; box-shadow:0 10px 30px rgba(0,0,0,0.07)}
+.h1{font-size:20px; color:var(--accent); margin:0 0 8px}
+.small{color:var(--muted); font-size:14px}
+#contador{color:var(--cobre); font-weight:700; margin-top:12px}
+.options{margin-top:16px}
+.options button{display:block; width:100%; max-width:680px; margin:8px auto; text-align:left; padding:12px 14px; border-radius:10px; border:2px solid var(--cobre); background:#fff; cursor:pointer; font-size:16px}
+.options button:hover{background:linear-gradient(90deg,#fff,#f7f2ea)}
+.progress{margin-top:12px; color:var(--muted)}
+.popup{
+  display:none; position:fixed; left:50%; top:18%; transform:translateX(-50%);
+  background:#fff; padding:18px; border-radius:12px; border:2px solid var(--oro);
+  box-shadow:0 12px 40px rgba(0,0,0,0.14); width:90%; max-width:420px; z-index:120;
+}
+.center{display:flex; flex-direction:column; align-items:center; gap:8px}
+.footer{background:var(--oro); color:#fff; padding:10px; text-align:center; font-size:13px;}
+.hidden{display:none}
+@media(min-width:720px){ .options button{max-width:700px} }
 </style>
 </head>
 <body>
+<header>🌳 GAMA · Seguimiento Postventa — Módulo 4</header>
+<main class="container">
+  <div class="card" id="welcome">
+    <div class="h1">Bienvenida — Seguimiento Postventa</div>
+    <div class="small">Instrucciones: haz <strong>un clic</strong> para activar sonido. Responde cada pregunta; tendrás un tiempo por pregunta. Usa los popups para leer feedback y continuar.</div>
+    <div style="margin-top:14px" class="center">
+      <button id="startBtn">🎧 Iniciar ejercicio</button>
+      <div id="contador" class="small">Tiempo: <span id="timeLabel">30</span>s</div>
+    </div>
+  </div>
 
-<h1>🌳 Bienvenida a GAMA Post Venta</h1>
-<p>Escucha las instrucciones y responde cada pregunta hasta alcanzar el 100%.</p>
-<button id="startBtn">🎧 Iniciar Ejercicio</button>
+  <div class="card hidden" id="game">
+    <div id="qwrap">
+      <!-- pregunta renderizada por JS -->
+    </div>
+    <div class="progress small">Progreso: <span id="progress">0 / 0</span></div>
+  </div>
+</main>
 
-<audio id="musicaFondo" src="música de videojuegos arcade retro-297305.mp3" loop></audio>
-<audio id="bien" src="BIEN.mp3"></audio>
-<audio id="no" src="NO.mp3"></audio>
-<audio id="pop" src="POP.mp3"></audio>
-
-<div id="game" style="display:none;">
-  <h2 id="question"></h2>
-  <div id="answers"></div>
+<!-- popup -->
+<div class="popup" id="popup" role="dialog" aria-modal="true">
+  <div id="popupText" class="small"></div>
+  <div style="margin-top:12px; text-align:right">
+    <button id="popupBtn">Continuar</button>
+  </div>
 </div>
 
-<div id="popup">
-  <p id="popupText"></p>
-  <button onclick="closePopup()">Continuar</button>
-</div>
-
+<footer class="footer">
+  Magali Sauceda® | Mentora Inmobiliaria | Fundadora de Raíces de Éxito — Metodología SPIN™
+</footer>
 <script>
-const questions = [
-  {
-    q: "¿Qué significa SPIN en ventas?",
-    options: ["Situación, Problema, Implicación, Necesidad", "Saber, Planear, Invertir, Negociar", "Sistema, Proceso, Inversión, Negocio"],
-    correct: 0
-  },
-  {
-    q: "¿Qué mide el NPS?",
-    options: ["Nivel de Promoción y Satisfacción", "Net Promoter Score o Nivel de Recomendación", "Negociación Profesional de Servicio"],
-    correct: 1
-  }
+/* ----------------- helpers de audio (codifica rutas con espacios) --------------- */
+function A(src){
+  try { return new Audio(encodeURI(src)); } catch(e){ return new Audio(src); }
+}
+
+/* ------------- archivos EXACTOS que subiste (no cambiar nombres) ------------- */
+const FILES = {
+  music: "música de videojuegos arcade retro-297305.mp3",
+  tiktak: "TIKTACK.mp3",
+  pop: "POP.mp3",
+  bien: "BIEN.mp3",
+  no: "NO.mp3",
+  tonto: "TONTO.mp3",
+  aplausos: "APLAUSOS.mp3",
+  fanfarrea: "FANFARREA.mp3",
+  bonus: "BONUS.mp3"
+};
+
+/* ---------------- precarga de sonidos ---------------- */
+const S = {
+  music: A(FILES.music),
+  tiktak: A(FILES.tiktak),
+  pop: A(FILES.pop),
+  bien: A(FILES.bien),
+  no: A(FILES.no),
+  tonto: A(FILES.tonto),
+  aplausos: A(FILES.aplausos),
+  fanfarrea: A(FILES.fanfarrea),
+  bonus: A(FILES.bonus)
+};
+S.music.loop = true; S.tiktak.loop = true;
+S.music.volume = 0.55; S.tiktak.volume = 0.35;
+
+/* ---------------- PREGUNTAS (editable) ---------------- */
+const PREG = [
+  { q:"¿Qué es el seguimiento postventa en el ámbito inmobiliario?", 
+    options:["Llamar solo si el cliente se queja","Mantener contacto programado para asegurar satisfacción y futuras ventas","Enviar mensajes sin objetivo definido"], correct:1, explain:"Mantener contacto estructurado evita olvidos y detecta oportunidades." },
+  { q:"¿Qué significa NPS (Net Promoter Score)?",
+    options:["Mide la probabilidad de que un cliente te recomiende","Nivel Promedio de Servicio","Nuevo Plan de Seguimiento"], correct:0, explain:"NPS mide la recomendación (1-10), útil para pedir referidos." },
+  { q:"¿Qué es un pipeline de ventas?",
+    options:["Sistema para visualizar en qué etapa está cada cliente","Documento de escritura pública","Lista de precios"], correct:0, explain:"Pipeline = etapas y acciones para mover prospectos a cierre." },
+  { q:"¿Cuál es el objetivo del cronograma postventa?",
+    options:["Organizar los contactos con propósito claro y fechas","Llamar cuando te acuerdes","Enviar publicidad masiva"], correct:0, explain:"Cada contacto tiene un objetivo: afianzar, medir, referir." },
+  { q:"¿Cuándo pedir referidos?",
+    options:["Cuando el cliente demuestra satisfacción real","Antes de que firme","Solo si te lo pide"], correct:0, explain:"Pedir referidos cuando el cliente es promotor es más efectivo." },
+  { q:"¿Qué herramientas ayudan al seguimiento profesional?",
+    options:["CRM, plantillas y automatizaciones","Mensajes improvisados","Post-its"], correct:0, explain:"Herramientas aseguran consistencia y medición." }
 ];
 
-let current = 0;
+let idx = 0, score = 0;
+let questionTimer = null, timeLeft = 30;
 
-document.getElementById("startBtn").addEventListener("click", () => {
-  document.getElementById("musicaFondo").play();
-  document.getElementById("startBtn").style.display = "none";
-  document.getElementById("game").style.display = "block";
-  showQuestion();
+/* elementos DOM */
+const startBtn = document.getElementById('startBtn');
+const welcome = document.getElementById('welcome');
+const game = document.getElementById('game');
+const qwrap = document.getElementById('qwrap');
+const popup = document.getElementById('popup');
+const popupText = document.getElementById('popupText');
+const popupBtn = document.getElementById('popupBtn');
+const timeLabel = document.getElementById('timeLabel');
+const progress = document.getElementById('progress');
+
+/* inicializa valores de progreso */
+progress.textContent = `${idx+1} / ${PREG.length}`;
+
+/* función para asegurar play tras interacción (política del navegador) */
+function ensureAudioOnFirstInteraction(){
+  document.body.addEventListener('click', function once(){
+    S.music.play().catch(()=>{});
+    document.body.removeEventListener('click', once);
+  }, { once:true });
+}
+
+/* Start */
+startBtn.addEventListener('click', ()=>{
+  ensureAudioOnFirstInteraction();
+  S.music.play().catch(()=>{});
+  welcome.classList.add('hidden');
+  game.classList.remove('hidden');
+  idx = 0; score = 0;
+  renderQuestion();
 });
 
-function showQuestion() {
-  const q = questions[current];
-  document.getElementById("question").textContent = q.q;
-  const answersDiv = document.getElementById("answers");
-  answersDiv.innerHTML = "";
-  q.options.forEach((opt, i) => {
-    const btn = document.createElement("button");
-    btn.textContent = opt;
-    btn.onclick = () => checkAnswer(i);
-    answersDiv.appendChild(btn);
-  });
+/* renderiza pregunta actual */
+function renderQuestion(){
+  clearInterval(questionTimer);
+  S.tiktak.currentTime = 0;
+  timeLeft = 30; timeLabel.textContent = timeLeft;
+  // iniciar tiktak
+  S.tiktak.play().catch(()=>{});
+  const P = PREG[idx];
+  progress.textContent = `${idx+1} / ${PREG.length}`;
+  qwrap.innerHTML = `
+    <div class="card" style="padding:14px">
+      <h2>${P.q}</h2>
+      <div class="options" id="optionsWrap">
+        ${P.options.map((o,i)=>`<button data-i="${i}" onclick="selectOption(${i})">${String.fromCharCode(65+i)}) ${o}</button>`).join('')}
+      </div>
+    </div>
+  `;
+  // contador por pregunta
+  questionTimer = setInterval(()=>{
+    timeLeft--; timeLabel.textContent = timeLeft;
+    if(timeLeft <= 5) document.getElementById('contador').style.color = 'var(--cobre)';
+    if(timeLeft <= 0){
+      clearInterval(questionTimer);
+      S.tiktak.pause();
+      S.no.play().catch(()=>{});
+      showPopup('⏰ Tiempo agotado. ' + P.explain, false);
+    }
+  },1000);
 }
 
-function checkAnswer(i) {
-  document.getElementById("pop").play();
-  const q = questions[current];
-  if (i === q.correct) {
-    document.getElementById("bien").play();
-    showPopup("¡Correcto! 🎉");
+/* selecciona opción (llamada desde onclick de botones) */
+function selectOption(sel){
+  // prevenir doble click
+  const btns = document.querySelectorAll('#optionsWrap button');
+  btns.forEach(b=>b.disabled=true);
+  clearInterval(questionTimer);
+  S.tiktak.pause();
+  S.pop.play().catch(()=>{});
+  const P = PREG[idx];
+  const correcto = (sel === P.correct);
+  if(correcto){
+    S.bien.play().catch(()=>{});
+    showPopup('✅ Correcto. ' + P.explain, true);
   } else {
-    document.getElementById("no").play();
-    showPopup("Respuesta incorrecta. Vuelve a intentarlo. 😅");
-    return;
+    S.no.play().catch(()=>{});
+    showPopup('❌ No es correcto. ' + P.explain, false);
   }
-  current++;
-  if (current < questions.length) {
-    setTimeout(showQuestion, 1000);
+}
+
+/* mostrar popup */
+function showPopup(text, positive){
+  popupText.textContent = text;
+  popup.style.display = 'block';
+  // si es positivo y última pregunta, pausa música para fanfarrea en closePopup
+  popup.dataset.positive = positive ? '1' : '0';
+}
+
+/* cerrar popup y control de flujo */
+function closePopup(){
+  popup.style.display = 'none';
+  const positive = popup.dataset.positive === '1';
+  // si acertó (positive true) avanzamos; si no, repetimos misma pregunta
+  if(positive){
+    idx++;
+    if(idx < PREG.length){
+      // pequeña espera para que el usuario perciba el resultado
+      setTimeout(renderQuestion, 450);
+      return;
+    } else {
+      // terminó todo: reproducir fanfarria/aplausos y mostrar mensaje final
+      S.music.pause();
+      S.fanfarrea.play().catch(()=>{ S.aplausos.play().catch(()=>{}); });
+      qwrap.innerHTML = `<div class="card"><h2>🎉 ¡Has completado el módulo con éxito!</h2><p class="small">Puntuación: ${score} / ${PREG.length}</p></div>`;
+      // mostrar botones finales opcionales
+      return;
+    }
   } else {
-    showPopup("🎊 ¡Felicidades! Completaste el módulo.");
+    // repetir la misma pregunta: reiniciar contador y renderizar de nuevo (sin avanzar idx)
+    setTimeout(renderQuestion, 300);
   }
 }
 
-function showPopup(text) {
-  const p = document.getElementById("popup");
-  document.getElementById("popupText").textContent = text;
-  p.style.display = "block";
-}
+/* conectar popupBtn al cierre */
+popupBtn.addEventListener('click', closePopup);
 
-function closePopup() {
-  // cerrar popup
-  document.getElementById("popup").style.display = "none";
+/* Exponer selectOption global para usar onclick inline */
+window.selectOption = selectOption;
 
-  // si quedan preguntas, mostrar la siguiente
-  if (current < questions.length) {
-  setTimeout(showQuestion, 500);
-  return;
-}
-
-  // si ya terminó todo, reproducir fanfarria y mostrar mensaje final
-  try {
-    const fanfarria = new Audio("FANFARREA.mp3");
-    fanfarria.play();
-  } catch (e) { /* ignore */ }
-
-  const qEl = document.getElementById("question");
-  const aEl = document.getElementById("answers");
-  if (qEl) qEl.textContent = "🎉 ¡Has completado el módulo con éxito!";
-  if (aEl) aEl.innerHTML = "";
-}
-
+/* asegura que el primer click del usuario permita audio en móviles/navegadores */
+ensureAudioOnFirstInteraction();
 </script>
-
 </body>
 </html>
