@@ -1,181 +1,162 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>🌳 GAMA Post Venta — Raíces de Éxito</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>🌳 GAMA Post Venta — Simulador SPIN</title>
 <style>
-  body {
-    font-family: "Segoe UI", Arial, sans-serif;
-    background: #fffaf0;
-    color: #3b2f2a;
-    margin: 0;
-    padding: 0;
-  }
-  header {
-    background: #b98b3b;
-    color: white;
-    text-align: center;
-    padding: 16px;
-  }
-  h1 { margin: 0; }
-  main {
-    max-width: 800px;
-    margin: 30px auto;
-    background: white;
-    border: 2px solid #b66b3a;
-    border-radius: 12px;
-    padding: 20px;
-  }
-  .question { font-weight: bold; margin-bottom: 15px; }
-  .options button {
-    display: block;
-    width: 100%;
-    background: #fff;
-    border: 2px solid #b66b3a;
-    border-radius: 8px;
-    padding: 10px;
-    margin: 6px 0;
-    cursor: pointer;
-    font-weight: 600;
-    transition: 0.2s;
-  }
-  .options button:hover { background: #b66b3a; color: white; }
-  .feedback { margin-top: 12px; font-weight: bold; }
-  .good { color: #2ecc71; }
-  .bad { color: #e74c3c; }
-  .hidden { display: none; }
-  #finish { text-align: center; }
-  #finish h2 { color: #b66b3a; }
-  .btn {
-    background: #b98b3b;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-  }
-  .btn:hover { background: #a87c32; }
+body{font-family:"Segoe UI",Roboto,sans-serif;background:#f8f3ec;margin:0;color:#3b2f2a}
+.wrap{max-width:900px;margin:20px auto;padding:20px;background:#fffaf0;border-radius:10px;border:2px solid #b66b3a}
+h1{color:#b98b3b;text-align:center}
+button{cursor:pointer;border:none;border-radius:8px;padding:10px 14px;font-weight:700}
+.btn{background:#b98b3b;color:#fff;margin:5px}
+.btn:hover{background:#9a742e}
+.opt-btn{display:block;width:100%;text-align:left;margin:8px 0;padding:10px;border:2px solid #b66b3a;border-radius:8px;background:#fff;font-weight:700}
+.opt-btn:hover{background:#b66b3a;color:#fff}
+.hidden{display:none}
+.good{color:#2ecc71;font-weight:700}
+.bad{color:#e74c3c;font-weight:700}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;z-index:2000}
+.modal-card{background:#fff;padding:20px;border-radius:10px;max-width:600px;width:90%}
 </style>
 </head>
 <body>
-
-<header>
-  <h1>🌳 GAMA Post Venta</h1>
-  <p>Raíces de Éxito | Simulador Ético SPIN™</p>
-</header>
-
-<main>
+<div class="wrap">
+  <h1>🌳 Bienvenida a GAMA Post Venta</h1>
+  <p style="text-align:center">Responde correctamente todas las preguntas SPIN. Las falladas se repiten hasta lograr 100%.</p>
   <div id="intro">
-    <p>Bienvenida al simulador de Post Venta. Escucha las instrucciones y responde cada pregunta para alcanzar el 100%.</p>
-    <button id="start" class="btn">▶️ Iniciar Entrenamiento</button>
-  </div>
-
-  <div id="quiz" class="hidden">
-    <div id="question-container">
-      <div id="question" class="question"></div>
-      <div id="options" class="options"></div>
-      <div id="feedback" class="feedback"></div>
+    <div style="text-align:center">
+      <button id="startBtn" class="btn">✨ Iniciar Simulador</button>
     </div>
-    <button id="next" class="btn hidden">➡️ Siguiente</button>
   </div>
 
-  <div id="finish" class="hidden">
-    <h2>🎊 ¡Entrenamiento completado!</h2>
-    <p>Has respondido correctamente todas las preguntas del módulo Post Venta.</p>
-    <button id="restart" class="btn">🔁 Volver a entrenar</button>
+  <div id="game" class="hidden">
+    <div id="questionText" style="font-weight:900;font-size:18px;margin-top:10px;"></div>
+    <div id="optionsWrap"></div>
+    <div id="feedbackArea" style="min-height:40px;margin-top:8px;"></div>
+    <button id="nextBtn" class="btn hidden">Siguiente ➡️</button>
+    <div style="margin-top:10px;text-align:right;color:#6f5f52" id="progressText"></div>
   </div>
-</main>
+</div>
+
+<!-- FINAL -->
+<div id="finalModal" class="modal hidden" aria-hidden="true">
+  <div class="modal-card">
+    <h2>🎉 ¡Perfecto! Has logrado el 100%</h2>
+    <p>Repetiste hasta corregir todas las preguntas. Excelente desempeño.</p>
+    <div style="text-align:right">
+      <button id="restartBtn" class="btn">Volver a Entrenar</button>
+    </div>
+  </div>
+</div>
 
 <script>
-/* ==== SONIDOS SIMPLES ==== */
-const soundCorrect = new Audio("https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg");
-const soundWrong   = new Audio("https://actions.google.com/sounds/v1/cartoon/boing.ogg");
-const soundStart   = new Audio("https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg");
-
-/* ==== PREGUNTAS ==== */
-const preguntas = [
-  {texto: "¿Qué significa SPIN en ventas?", opciones: ["Situación, Problema, Implicación, Necesidad", "Saber, Planear, Invertir, Negociar", "Sistema, Proceso, Inversión, Negocio"], correcta: 0},
-  {texto: "¿Qué harías si un cliente se queja por un retraso?", opciones: ["Escucharlo y resolver", "Ignorarlo", "Culpar a otro"], correcta: 0},
-  {texto: "¿Por qué es importante documentar la entrega?", opciones: ["Evita malentendidos y protege ambas partes", "Solo para archivo", "Porque lo pide el cliente"], correcta: 0},
-  {texto: "¿Qué pasa si no das seguimiento post venta?", opciones: ["Pierdes confianza y futuras ventas", "Nada", "Ahorras tiempo"], correcta: 0},
-  {texto: "¿Qué tipo de preguntas descubren necesidades?", opciones: ["De implicación y necesidad", "De producto", "De saludo"], correcta: 0},
-  {texto: "¿Qué deberías hacer si detectas un error en la escritura?", opciones: ["Avisar y resolver con ética", "Ocultarlo", "Culpar al notario"], correcta: 0},
-  {texto: "¿Cuál es la meta principal de la post venta?", opciones: ["Fidelizar y cuidar la reputación", "Vender otra casa", "Ahorrar tiempo"], correcta: 0},
-  {texto: "¿Qué actitud genera confianza en el cliente?", opciones: ["Escuchar activamente", "Hablar sin pausa", "Prometer sin cumplir"], correcta: 0},
-  {texto: "¿Qué beneficio obtienes al aplicar SPIN?", opciones: ["Cierres éticos y clientes felices", "Más manipulación", "Evitar responsabilidad"], correcta: 0},
-  {texto: "¿Qué hacer si fallas en tres respuestas seguidas?", opciones: ["Pausar, reflexionar y retomar", "Abandonar", "Culpar al sistema"], correcta: 0}
+const BANK = [
+  {text:'¿Qué significa SPIN en ventas?',
+   options:['Situación, Problema, Implicación, Necesidad','Saber, Planear, Invertir, Negociar','Sistema, Proceso, Inversión, Negocio'],
+   correct:'Situación, Problema, Implicación, Necesidad',
+   explain:'SPIN = Situación (hechos), Problema (dolor), Implicación (consecuencia), Necesidad (deseo o resultado).'},
+  {text:'¿Qué mide el NPS?',
+   options:['Nivel de recomendación del cliente (1-10)','Nivel de ventas mensuales','Número de propiedades vendidas'],
+   correct:'Nivel de recomendación del cliente (1-10)',
+   explain:'NPS = Net Promoter Score: mide qué tan probable es que un cliente te recomiende.'},
+  {text:'¿Qué es un pipeline en ventas?',
+   options:['El embudo de etapas de prospecto a cliente','Un contrato de compraventa','Un software de facturación'],
+   correct:'El embudo de etapas de prospecto a cliente',
+   explain:'Pipeline = flujo o embudo comercial que te ayuda a medir avances y cierres.'},
+  {text:'¿Cuándo es mejor pedir referidos?',
+   options:['Cuando el cliente demuestra satisfacción real','Al primer contacto','Al firmar sin seguimiento'],
+   correct:'Cuando el cliente demuestra satisfacción real',
+   explain:'Postventa: pedir referidos cuando hay emoción positiva y confianza real.'},
+  {text:'¿Qué pregunta revela la situación financiera del cliente?',
+   options:['¿Con qué recursos planea la compra (propios, crédito)?','¿Le gusta la zona?','¿Cuántos cuartos busca?'],
+   correct:'¿Con qué recursos planea la compra (propios, crédito)?',
+   explain:'Detectar recursos financieros evita perder tiempo con prospectos no calificados.'}
 ];
 
-let indice = 0;
-const intro = document.getElementById("intro");
-const quiz = document.getElementById("quiz");
-const finish = document.getElementById("finish");
-const question = document.getElementById("question");
-const options = document.getElementById("options");
-const feedback = document.getElementById("feedback");
-const nextBtn = document.getElementById("next");
-const startBtn = document.getElementById("start");
-const restartBtn = document.getElementById("restart");
+let pool = [];
+let missed = [];
+let currentIndex = 0;
+let started = false;
 
-startBtn.onclick = iniciar;
-nextBtn.onclick = siguiente;
-restartBtn.onclick = reiniciar;
+const intro = document.getElementById('intro');
+const game = document.getElementById('game');
+const startBtn = document.getElementById('startBtn');
+const questionText = document.getElementById('questionText');
+const optionsWrap = document.getElementById('optionsWrap');
+const feedbackArea = document.getElementById('feedbackArea');
+const nextBtn = document.getElementById('nextBtn');
+const progressText = document.getElementById('progressText');
+const finalModal = document.getElementById('finalModal');
+const restartBtn = document.getElementById('restartBtn');
 
-/* ==== FUNCIONES ==== */
-function iniciar() {
-  soundStart.play();
-  intro.classList.add("hidden");
-  quiz.classList.remove("hidden");
-  indice = 0;
-  mostrarPregunta();
+startBtn.onclick = ()=> startGame();
+
+function startGame(){
+  started = true;
+  intro.classList.add('hidden');
+  game.classList.remove('hidden');
+  pool = shuffle([...BANK]);
+  missed = [];
+  currentIndex = 0;
+  renderQuestion();
 }
 
-function mostrarPregunta() {
-  const p = preguntas[indice];
-  question.textContent = p.texto;
-  options.innerHTML = "";
-  feedback.textContent = "";
-  nextBtn.classList.add("hidden");
-
-  p.opciones.forEach((texto, i) => {
-    const btn = document.createElement("button");
-    btn.textContent = texto;
-    btn.onclick = () => responder(i);
-    options.appendChild(btn);
-  });
-}
-
-function responder(seleccion) {
-  const p = preguntas[indice];
-  const correcto = seleccion === p.correcta;
-  feedback.innerHTML = correcto
-    ? `<span class="good">✅ ¡Correcto!</span>`
-    : `<span class="bad">❌ Incorrecto. La respuesta correcta es: ${p.opciones[p.correcta]}</span>`;
-  document.querySelectorAll(".options button").forEach(b => b.disabled = true);
-  correcto ? soundCorrect.play() : soundWrong.play();
-  nextBtn.classList.remove("hidden");
-}
-
-function siguiente() {
-  indice++;
-  if (indice < preguntas.length) {
-    mostrarPregunta();
-  } else {
-    terminar();
+function renderQuestion(){
+  feedbackArea.textContent = '';
+  nextBtn.classList.add('hidden');
+  if(!pool[currentIndex]){
+    if(missed.length>0){
+      pool = shuffle([...missed]);
+      missed=[];
+      currentIndex=0;
+      renderQuestion();
+      return;
+    }else{
+      showFinal();
+      return;
+    }
   }
+  const q = pool[currentIndex];
+  questionText.textContent = q.text;
+  optionsWrap.innerHTML = '';
+  const opts = shuffle([...q.options]);
+  opts.forEach(opt=>{
+    const b=document.createElement('button');
+    b.className='opt-btn';
+    b.textContent=opt;
+    b.onclick=()=>checkAnswer(opt,q);
+    optionsWrap.appendChild(b);
+  });
+  progressText.textContent=`Pregunta ${currentIndex+1} de ${pool.length}`;
 }
 
-function terminar() {
-  quiz.classList.add("hidden");
-  finish.classList.remove("hidden");
+function checkAnswer(choice,q){
+  Array.from(document.querySelectorAll('.opt-btn')).forEach(b=>b.disabled=true);
+  if(choice===q.correct){
+    feedbackArea.innerHTML=`<div class="good">✅ Correcto.</div><div style="font-size:14px">${q.explain}</div>`;
+  }else{
+    feedbackArea.innerHTML=`<div class="bad">❌ Incorrecto.</div><div style="font-size:14px">Respuesta correcta: <b>${q.correct}</b><br>${q.explain}</div>`;
+    if(!missed.includes(q)) missed.push(q);
+  }
+  nextBtn.classList.remove('hidden');
 }
 
-function reiniciar() {
-  finish.classList.add("hidden");
-  intro.classList.remove("hidden");
+nextBtn.onclick=()=>{currentIndex++;renderQuestion();}
+
+restartBtn.onclick=()=>{
+  finalModal.classList.add('hidden');
+  intro.classList.remove('hidden');
+  game.classList.add('hidden');
+  started=false;
+};
+
+function showFinal(){
+  finalModal.classList.remove('hidden');
+  finalModal.setAttribute('aria-hidden','false');
 }
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 </script>
-
 </body>
 </html>
