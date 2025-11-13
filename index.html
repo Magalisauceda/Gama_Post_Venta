@@ -1,75 +1,185 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>🌳 GAMA Post Venta — Raíces de Éxito</title>
-<style>
-:root {
-  --oro:#b98b3b; --cobre:#b66b3a; --beige:#f2eadf; --marfil:#fffaf0;
-  --accent:#3b2f2a; --muted:#6f5f52; --green:#2ecc71; --red:#e74c3c;
-  font-family:"Segoe UI",Roboto,Arial,sans-serif;
-}
-html,body{margin:0;height:100%;background:var(--beige);color:var(--accent);}
-.wrap{max-width:900px;margin:auto;padding:18px;}
-.card{background:var(--marfil);border:2px solid var(--cobre);border-radius:12px;padding:18px;}
-h1{color:var(--oro);font-size:20px;margin:0 0 10px;}
-button{border-radius:8px;padding:10px 16px;font-weight:700;cursor:pointer;}
-.btn-primary{background:var(--oro);color:#fff;border:0;}
-.btn-ghost{background:transparent;border:2px solid var(--cobre);color:var(--cobre);}
-.hidden{display:none;}
-.opt-btn{display:block;width:100%;margin-top:8px;padding:12px;border:2px solid var(--cobre);
-  border-radius:8px;background:#fff;font-weight:700;cursor:pointer;}
-.opt-btn:hover{background:var(--cobre);color:#fff;}
-.good{color:var(--green);}
-.bad{color:var(--red);}
-#popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.45);
-  display:none;align-items:center;justify-content:center;z-index:1000;}
-#popupContent{background:#fff;padding:20px;border-radius:12px;text-align:center;max-width:400px;}
-</style>
+  <meta charset="utf-8" />
+  <title>GAMA Post Venta - MVP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --oro: #b98b3b;
+      --cobre: #b66b3a;
+      --beige: #f2eadf;
+      --marfil: #fffaf0;
+      --text: #1a1a1a;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; font-family: Arial, sans-serif; background: #fff; color: var(--text); }
+    .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+    header { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 2px solid #eee; }
+    h1 { font-size: 1.25rem; color: var(--marfil); background: var(--oro); padding: 8px 12px; border-radius: 6px; }
+    #score { font-weight: bold; }
+    .screen { min-height: 420px; padding: 20px; }
+    .card { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 16px; box-shadow: 0 2px 6px rgba(0,0,0,.05); }
+    .pregunta { font-size: 1.1rem; margin-bottom: 12px; }
+    .opcion { display: block; width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #ccc; background: #f7f7f7; cursor: pointer; text-align: left; }
+    .opcion:hover { background: #ececec; }
+    .btn { padding: 12px 16px; border: none; border-radius: 8px; background: var(--cobre); color: white; cursor: pointer; }
+    .btn.secondary { background: #666; }
+    .popup { margin-top: 10px; padding: 10px; background: #eef6ff; border: 1px solid #cfe0ff; border-radius: 8px; }
+    footer { margin-top: 12px; text-align: right; }
+    @media (min-width: 700px) {
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    }
+  </style>
 </head>
 <body>
-<div class="wrap">
+  <div class="container" id="app" aria-label="Simulador SPIN Post Venta MVP">
+    <header>
+      <div><strong>GAMA Post Venta</strong> - MVP</div>
+      <div id="score" aria-live="polite">Comisión: 0</div>
+    </header>
 
-<section id="intro" class="card">
-  <h1>🌳 Bienvenida a GAMA Post Venta</h1>
-  <p>Entrenamiento SPIN Inmobiliario. Escucha las instrucciones y responde cada pregunta hasta alcanzar el 100%.</p>
-  <button id="startBtn" class="btn-primary">🎧 Iniciar simulador</button>
-</section>
+    <section class="screen" id="screen" aria-label="Pantalla de juego">
+      <!-- se carga dinámicamente -->
+    </section>
 
-<section id="game" class="card hidden">
-  <div id="questionText" style="font-weight:800;margin-bottom:10px;">Pregunta aquí</div>
-  <div id="optionsWrap"></div>
-  <div id="feedbackArea" style="margin-top:10px;"></div>
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;">
-    <span id="timerDisp" style="font-weight:800;color:var(--cobre)">00:20</span>
-    <button id="nextBtn" class="btn-primary" disabled>Siguiente ➡️</button>
+    <footer>
+      <button id="btn-retry" class="btn" style="display:none">Reintentar hasta 100%</button>
+    </footer>
   </div>
-</section>
 
-<div id="popup">
-  <div id="popupContent">
-    <div id="popupText"></div>
-    <button id="popupClose" class="btn-primary" style="margin-top:10px;">Continuar</button>
-  </div>
-</div>
+  <script>
+    // data simple (2 fases x 3 preguntas cada una)
+    const preguntasFases = [
+      {
+        fase: "SPIN",
+        preguntas: [
+          { pregunta: "1) ¿Qué necesidad busca el cliente en la postventa?", opciones: ["A. Comodidad", "B. Respuesta rápida", "C. Documentación clara"], respuestaIndex: 1, explicacion: "En SPIN, entender la necesidad es clave." },
+          { pregunta: "2) ¿Qué pregunta ayuda a identificar la Situación?", opciones: ["A. ¿Qué pasó?", "B. ¿Qué tipo de seguimiento desea?", "C. ¿Cuándo compró la propiedad?"], respuestaIndex: 1, explicacion: "La pregunta de Situación orienta el contexto." },
+          { pregunta: "3) ¿Qué opción describe mejor una Pregunta de Necesidad?", opciones: ["A. Busca información de la competencia", "B. Indaga beneficios futuros", "C. Cierra la venta ya"], respuestaIndex: 1, explicacion: "Las preguntas de necesidad exploran beneficios futuros." }
+        ]
+      },
+      {
+        fase: "CAPTACION",
+        preguntas: [
+          { pregunta: "4) En CAPTACIÓN, ¿qué se valida?", opciones: ["A. Interés del cliente", "B. Ubicación de la oficina", "C. Color de la fachada"], respuestaIndex: 0, explicacion: "Se valida interés y próximos pasos." },
+          { pregunta: "5) ¿Qué técnica ayuda a priorizar seguimientos?", opciones: ["A. Llamar una vez", "B. Cronómetro y plan de acción", "C. Enviar correo sin respuesta"], respuestaIndex: 1, explicacion: "El plan de acción mejora la organización." },
+          { pregunta "6) ¿Qué es clave para evitar objeciones?", opciones: ["A. Escuchar", "B. Hablar mucho", "C. Evitar preguntas"], respuestaIndex: 0, explicacion: "La escucha activa reduce objeciones." }
+        ]
+      }
+    ];
 
-<audio id="bgMusic" src="música de videojuegos arcade retro-297305.mp3" loop></audio>
-<audio id="tick" src="TIKTACK.mp3"></audio>
-<audio id="correct" src="BIEN.mp3"></audio>
-<audio id="wrong" src="NO.mp3"></audio>
-<audio id="pop" src="POP.mp3"></audio>
-<audio id="fanfare" src="FANFARREA.mp3"></audio>
+    // estado mínimo
+    let estado = {
+      faseIndex: 0,
+      preguntaIndex: 0,
+      aciertos: 0,
+      errores: 0,
+      comision: 0
+    };
 
-</div>
+    const app = document.getElementById('app');
+    const screen = document.getElementById('screen');
+    const scoreEl = document.getElementById('score');
+    const btnRetry = document.getElementById('btn-retry');
 
-<script>
-const questions = [
-  {text:"¿Qué significa SPIN en ventas?", options:["Situación, Problema, Implicación, Necesidad","Saber, Planear, Invertir, Negociar","Sistema, Proceso, Inversión, Negocio"], correct:0},
-  {text:"¿Qué mide el NPS?", options:["Nivel de Promoción y Satisfacción","Net Promoter Score o Nivel de Recomendación","Negociación Profesional de Servicio"], correct:1},
-  {text:"¿Qué busca la metodología SPIN?", options:["Presionar al cliente","Comprender y conectar con sus necesidades","Evitar preguntas"], correct:1},
-  {text:"¿Qué representa la 'I' en SPIN?", options:["Implicación","Inversión","Interés"], correct:0}
-];
+    function actualizarScore() {
+      scoreEl.textContent = "Comisión: " + estado.comision;
+      scoreEl.setAttribute('aria-label', 'Comisión actual: ' + estado.comision);
+    }
 
-let current = 0;
-let ti
+    function renderBienvenida() {
+      screen.innerHTML = `
+        <div class="card">
+          <p>Bienvenido al simulador SPIN Post Venta (MVP).</p>
+          <p>Inicia para practicar 2 fases con preguntas cronometradas, feedback y una comisión simulada.</p>
+          <button id="btn-iniciar" class="btn">Iniciar simulador</button>
+        </div>
+      `;
+      document.getElementById('btn-iniciar').addEventListener('click', iniciar);
+    }
+
+    function iniciar() {
+      estado = { faseIndex: 0, preguntaIndex: 0, aciertos: 0, errores: 0, comision: 0 };
+      cargarPregunta();
+      actualizarScore();
+    }
+
+    function cargarPregunta() {
+      const fase = preguntasFases[estado.faseIndex];
+      const pIdx = estado.preguntaIndex;
+      if (!fase || !fase.preguntas[pIdx]) {
+        // terminar
+        finalizar();
+        return;
+      }
+      const p = fase.preguntas[pIdx];
+      screen.innerHTML = `
+        <div class="card" role="region" aria-label="Pregunta de la fase ${fase.fase}">
+          <div class="pregunta">${p.pregunta}</div>
+          ${p.opciones.map((op, i) => `<button class="opcion" data-i="${i}">${op}</button>`).join('')}
+          <div class="popup" id="popup" style="display:none" aria-live="polite"></div>
+        </div>
+      `;
+      document.querySelectorAll('.opcion').forEach(btn => {
+        btn.addEventListener('click', () => evaluar(parseInt(btn.dataset.i, 10)));
+      });
+    }
+
+    function evaluar(i) {
+      const fase = preguntasFases[estado.faseIndex];
+      const p = fase.preguntas[estado.preguntaIndex];
+      const correcto = i === p.respuestaIndex;
+      const popup = document.getElementById('popup');
+      if (correcto) {
+        estado.aciertos++;
+        estado.comision += 10;
+        popup.textContent = "Correcto: " + p.explicacion;
+      } else {
+        estado.errores++;
+        estado.comision -= 5;
+        popup.textContent = "Incorrecto: " + p.explicacion;
+      }
+      popup.style.display = 'block';
+      setTimeout(() => {
+        popup.style.display = 'none';
+        avanzar();
+      }, 900);
+    }
+
+    function avanzar() {
+      estado.preguntaIndex++;
+      const fase = preguntasFases[estado.faseIndex];
+      if (estado.preguntaIndex >= fase.preguntas.length) {
+        estado.faseIndex++;
+        estado.preguntaIndex = 0;
+      }
+      if (estado.faseIndex >= preguntasFases.length) {
+        finalizar();
+      } else {
+        cargarPregunta();
+        actualizarScore();
+      }
+    }
+
+    function finalizar() {
+      screen.innerHTML = `
+        <div class="card">
+          <h3>Resumen</h3>
+          <p>Aciertos: ${estado.aciertos}</p>
+          <p>Errores: ${estado.errores}</p>
+          <p>Comisión total: ${estado.comision}</p>
+          <p>Ronda terminada. Puedes reintentar hasta lograr 100% de rendimiento.</p>
+          <button id="btn-retry-now" class="btn">Reintentar</button>
+        </div>
+      `;
+      btnRetry.style.display = 'inline-block';
+      document.getElementById('btn-retry-now').addEventListener('click', iniciar);
+    }
+
+    // inicialización
+    renderBienvenida();
+    // si quieres iniciar automáticamente, llama iniciar() aquí
+  </script>
+</body>
+</html>
