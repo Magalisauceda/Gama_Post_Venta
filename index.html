@@ -1,135 +1,265 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>🌳 GAMA Post Venta — Raíces de Éxito</title>
 <style>
-body {
-  font-family: 'Poppins', sans-serif;
-  background-color: #fffaf0;
-  color: #3b2f2a;
-  text-align: center;
-  padding: 20px;
-}
-button {
-  background-color: #b98b3b;
-  border: none;
-  padding: 10px 20px;
-  color: white;
-  font-weight: bold;
-  border-radius: 8px;
-  margin: 5px;
-  cursor: pointer;
-}
-button:hover { background-color: #b66b3a; }
-#questionBox {
-  background: #f2eadf;
-  padding: 20px;
-  border-radius: 15px;
-  display: none;
-  margin-top: 20px;
-}
-#popup {
-  background: rgba(0,0,0,0.8);
-  color: white;
-  padding: 20px;
-  border-radius: 10px;
-  display: none;
-  position: fixed;
-  top: 30%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
+  :root{
+    --oro:#b98b3b; --cobre:#b66b3a; --beige:#f2eadf; --marfil:#fffaf0;
+    --accent:#3b2f2a; --muted:#6f5f52; --green:#2ecc71; --red:#e74c3c;
+    font-family:"Segoe UI", Roboto, Arial, sans-serif;
+  }
+  html,body{height:100%;margin:0;background:var(--beige);color:var(--accent);}
+  .wrap{max-width:1100px;margin:18px auto;padding:18px;}
+  .card{background:var(--marfil);border:2px solid var(--cobre);border-radius:12px;padding:18px;}
+  h1{color:var(--oro);margin:0;font-size:20px}
+  button{border:0;border-radius:10px;padding:10px 14px;cursor:pointer;font-weight:800}
+  .btn-primary{background:var(--oro);color:#fff}
+  .btn-ghost{background:transparent;border:2px solid var(--cobre);color:var(--cobre)}
+  .hidden{display:none}
+  .opt-btn{padding:12px;border:2px solid var(--cobre);border-radius:8px;background:#fff;cursor:pointer;font-weight:700;}
+  .opt-btn:hover{background:var(--cobre);color:#fff}
+  .good{color:var(--green);} .bad{color:var(--red);}
+  .commission{border:2px solid var(--cobre);padding:8px 12px;border-radius:8px;background:#fffaf0;font-weight:900}
+  .modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.45);z-index:2000}
+  .modal-card{background:#fff;padding:18px;border-radius:10px;max-width:760px;width:94%}
 </style>
 </head>
 <body>
-<h1>🌳 Bienvenida a GAMA Post Venta</h1>
-<p>Escucha las instrucciones y responde cada pregunta hasta alcanzar el 100%.</p>
-<button id="startBtn">🎧 Iniciar Ejercicio</button>
+<div class="wrap">
+  <!-- Intro -->
+  <section id="intro" class="card">
+    <h1>🔑 GAMA Post Venta — Entrenamiento SPIN™</h1>
+    <p>Simulador de preguntas y decisiones éticas para asesores inmobiliarios. Practica situaciones reales, escucha los sonidos de retroalimentación y mejora tu desempeño.</p>
+    <p><b>Objetivo:</b> mantener la comisión y ética durante la post venta.</p>
+    <button id="startBtn" class="btn-primary">🎧 Iniciar Ejercicio</button>
+  </section>
 
-<div id="questionBox">
-  <h2 id="questionText"></h2>
-  <div id="options"></div>
-</div>
+  <!-- Game -->
+  <section id="game" class="card hidden">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div id="phaseTitle" style="font-weight:900;color:var(--oro);font-size:18px"></div>
+        <div id="phaseSub" class="muted"></div>
+      </div>
+      <div>
+        <div>Comisión:</div>
+        <div class="commission" id="commissionDisp">$0</div>
+      </div>
+    </div>
+    <div id="questionText" style="font-weight:800;margin-top:12px;"></div>
+    <div id="optionsWrap" style="margin-top:12px;display:grid;gap:8px;"></div>
+    <div id="feedbackArea" style="margin-top:10px;font-weight:800;min-height:28px"></div>
+    <div style="display:flex;gap:10px;margin-top:12px;">
+      <button id="nextBtn" class="btn-primary" disabled>Siguiente ➡️</button>
+      <button id="forceCardBtn" class="btn-ghost">🎴 Carta Clave</button>
+      <div id="progressText" style="margin-left:auto;color:var(--muted);font-size:13px;"></div>
+    </div>
+  </section>
 
-<div id="popup">
-  <p id="popupText"></p>
-  <button onclick="closePopup()">Continuar</button>
+  <!-- Carta Clave -->
+  <div id="cardModal" class="modal hidden">
+    <div class="modal-card">
+      <h3>🎴 Carta Clave — Acción Ética</h3>
+      <div id="cardText" style="font-weight:800;margin-bottom:8px;"></div>
+      <div id="cardOpts" style="display:grid;gap:8px;"></div>
+      <div style="text-align:right;margin-top:12px">
+        <button id="closeCard" class="btn-ghost">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Final -->
+  <div id="finalModal" class="modal hidden">
+    <div class="modal-card">
+      <h2 id="finalTitle">🏁 Resultado</h2>
+      <div id="finalSummary"></div>
+      <div style="text-align:right;margin-top:12px">
+        <button id="restartBtn" class="btn-primary">🔁 Volver a Entrenar</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
-const questions = [
-  {
-    text: "¿Qué significa SPIN en ventas?",
-    options: ["Situación, Problema, Implicación, Necesidad", "Saber, Planear, Invertir, Negociar", "Sistema, Proceso, Inversión, Negocio"],
-    correct: 0
-  },
-  {
-    text: "¿Qué mide el NPS?",
-    options: ["Nivel de Promoción y Satisfacción", "Net Promoter Score o Nivel de Recomendación", "Negociación Profesional de Servicio"],
-    correct: 1
-  },
-  {
-    text: "¿Qué es un pipeline?",
-    options: ["Embudo de ventas que muestra el progreso de cada cliente", "Una lista de propiedades", "Un contrato de exclusividad"],
-    correct: 0
-  }
+/* CONFIGURACIÓN */
+const TOTAL_COMMISSION = 100000;
+const PHASES = [
+  {title:'Fase 1 — SPIN™ Básico', desc:'Detecta situación, problema, implicación y necesidad', time:15, count:10},
+  {title:'Fase 2 — Ética y objeciones', desc:'Evalúa decisiones éticas y manejo de objeciones', time:15, count:10}
 ];
 
-let current = 0;
+const BANK = [
+  {text:'¿Qué harías si un cliente reclama por un malentendido de escritura?', options:['Lo escuchas y corriges','Le echas la culpa al notario','Ignoras'], correct:'Lo escuchas y corriges', type:'P'},
+  {text:'¿Qué pasaría si no revisas las condiciones de apartado con el comprador?', options:['Riesgo de reclamo','Nada','Más venta'], correct:'Riesgo de reclamo', type:'I'},
+  {text:'¿Qué harías si el cliente pide apoyo post venta?', options:['Le das seguimiento','Dices que ya no te toca','Lo bloqueas'], correct:'Le das seguimiento', type:'N'},
+  {text:'¿Cuál es el propósito de la llamada de post venta?', options:['Asegurar satisfacción','Cobrar de nuevo','Venderle otra casa'], correct:'Asegurar satisfacción', type:'S'},
+  {text:'¿Cómo fortaleces la confianza después de la entrega?', options:['Escuchando y resolviendo','Ignorando','Culpando al banco'], correct:'Escuchando y resolviendo', type:'N'},
+  {text:'¿Qué harías si el cliente se queja en redes?', options:['Contactarlo y resolver','Ignorarlo','Responder agresivamente'], correct:'Contactarlo y resolver', type:'P'},
+  {text:'¿Qué pasa si no se documenta la posventa?', options:['Riesgo legal','Nada','Menos trabajo'], correct:'Riesgo legal', type:'I'},
+  {text:'¿Qué deberías documentar en la entrega?', options:['Acta de entrega','Nada','Mensajes de WhatsApp'], correct:'Acta de entrega', type:'S'},
+  {text:'¿Qué implica no tener retroalimentación del cliente?', options:['Pierdes mejora continua','Nada','Menos presión'], correct:'Pierdes mejora continua', type:'I'},
+  {text:'¿Por qué es importante el seguimiento?', options:['Fideliza al cliente','No lo es','Solo para quejarse'], correct:'Fideliza al cliente', type:'N'}
+];
 
-function startGame() {
-  current = 0;
-  document.getElementById("startBtn").style.display = "none";
-  document.getElementById("questionBox").style.display = "block";
-  showQuestion();
+const CARD_POOL = [
+  {text:'El cliente firmó apartado y no entendió penalización. ¿Qué haces?', A:'Explicas con empatía', B:'Ignoras', C:'Culpas al banco', correct:'A'},
+  {text:'Olvidaste aclarar impuestos al vender. ¿Qué haces?', A:'Admites error y corriges', B:'Culpas al notario', C:'Evades tema', correct:'A'}
+];
+
+let state = {phaseIndex:0,currentIndex:0,commission:0,perQuestion:0,wrongStreak:0};
+
+/* UI */
+const introSec=document.getElementById('intro');
+const gameSec=document.getElementById('game');
+const startBtn=document.getElementById('startBtn');
+const questionText=document.getElementById('questionText');
+const optionsWrap=document.getElementById('optionsWrap');
+const feedbackArea=document.getElementById('feedbackArea');
+const nextBtn=document.getElementById('nextBtn');
+const progressText=document.getElementById('progressText');
+const commissionDisp=document.getElementById('commissionDisp');
+const phaseTitle=document.getElementById('phaseTitle');
+const phaseSub=document.getElementById('phaseSub');
+const cardModal=document.getElementById('cardModal');
+const cardText=document.getElementById('cardText');
+const cardOpts=document.getElementById('cardOpts');
+const closeCard=document.getElementById('closeCard');
+const finalModal=document.getElementById('finalModal');
+const finalSummary=document.getElementById('finalSummary');
+const restartBtn=document.getElementById('restartBtn');
+const forceCardBtn=document.getElementById('forceCardBtn');
+
+/* SONIDOS */
+let audioCtx=null;
+function ensureAudio(){if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();}
+function playTone(f,type='sine',dur=0.1,vol=0.1){try{ensureAudio();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.value=f;o.connect(g);g.connect(audioCtx.destination);g.gain.value=vol;o.start();o.stop(audioCtx.currentTime+dur);}catch(e){}}
+function playCorrect(){playTone(880);}
+function playWrong(){playTone(200,'square',0.25);}
+function playTick(){playTone(1200,'square',0.03);}
+function playFanfare(){playTone(900);setTimeout(()=>playTone(1200),150);}
+
+/* FUNCIONES */
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function formatMoney(n){return '$'+Math.round(n).toLocaleString('es-MX');}
+
+/* INICIAR */
+startBtn.onclick=()=>{ensureAudio();introSec.classList.add('hidden');gameSec.classList.remove('hidden');prepareGame();loadPhase();};
+
+function prepareGame(){
+  const totalQ=PHASES.reduce((s,p)=>s+p.count,0);
+  state.perQuestion=Math.round(TOTAL_COMMISSION/totalQ);
+  state.commission=0;
+  commissionDisp.textContent=formatMoney(0);
 }
 
-function showQuestion() {
-  const q = questions[current];
-  document.getElementById("questionText").textContent = q.text;
-  const opts = document.getElementById("options");
-  opts.innerHTML = "";
-  q.options.forEach((opt, i) => {
-    const btn = document.createElement("button");
-    btn.textContent = opt;
-    btn.onclick = () => checkAnswer(i);
-    opts.appendChild(btn);
+/* RENDER */
+function loadPhase(){
+  const ph=PHASES[state.phaseIndex];
+  phaseTitle.textContent=ph.title;
+  phaseSub.textContent=ph.desc;
+  state.currentIndex=0;
+  renderQuestion();
+}
+
+let timer=null,timeLeft=0;
+function renderQuestion(){
+  clearInterval(timer);
+  feedbackArea.textContent='';
+  nextBtn.disabled=true;
+  const ph=PHASES[state.phaseIndex];
+  const q=BANK[state.currentIndex];
+  if(!q){finishPhase();return;}
+  questionText.textContent=q.text;
+  optionsWrap.innerHTML='';
+  shuffle(q.options).forEach(opt=>{
+    const b=document.createElement('button');
+    b.className='opt-btn';b.textContent=opt;
+    b.onclick=()=>handleAnswer(opt,q);
+    optionsWrap.appendChild(b);
   });
+  progressText.textContent=`Pregunta ${state.currentIndex+1}/${BANK.length}`;
+  timeLeft=ph.time;
+  timer=setInterval(()=>{
+    timeLeft--;
+    if(timeLeft<=5&&timeLeft>0)playTick();
+    if(timeLeft<=0){clearInterval(timer);handleTimeout();}
+  },1000);
 }
 
-function checkAnswer(i) {
-  const q = questions[current];
-  if (i === q.correct) {
-    showPopup("✅ ¡Correcto! Excelente trabajo.");
-  } else {
-    showPopup("❌ Respuesta incorrecta. Intenta de nuevo.");
-    return;
+/* RESPUESTAS */
+function handleAnswer(choice,q){
+  clearInterval(timer);
+  document.querySelectorAll('.opt-btn').forEach(b=>b.disabled=true);
+  if(choice===q.correct){
+    playCorrect();
+    state.commission+=state.perQuestion;
+    feedbackArea.innerHTML=`<span class="good">✅ Correcto +${formatMoney(state.perQuestion)}</span>`;
+  }else{
+    playWrong();
+    state.commission=Math.max(0,state.commission-state.perQuestion);
+    feedbackArea.innerHTML=`<span class="bad">❌ Incorrecto -${formatMoney(state.perQuestion)}</span>`;
+    state.wrongStreak++;
   }
-  current++;
-  if (current < questions.length) {
-    setTimeout(() => {
-      document.getElementById("popup").style.display = "none";
-      showQuestion();
-    }, 1000);
-  } else {
-    showPopup("🎉 ¡Felicidades! Completaste el módulo.");
+  commissionDisp.textContent=formatMoney(state.commission);
+  nextBtn.disabled=false;
+  if(state.wrongStreak>=3){setTimeout(()=>showCard(false),600);}
+}
+
+function handleTimeout(){
+  playWrong();
+  feedbackArea.innerHTML=`<span class="bad">⏱️ Tiempo agotado</span>`;
+  nextBtn.disabled=false;
+  state.wrongStreak++;
+  if(state.wrongStreak>=3){setTimeout(()=>showCard(false),600);}
+}
+
+nextBtn.onclick=()=>{state.currentIndex++;renderQuestion();};
+
+/* CARTA CLAVE */
+forceCardBtn.onclick=()=>showCard(true);
+closeCard.onclick=()=>cardModal.classList.add('hidden');
+
+function showCard(forced){
+  const card=CARD_POOL[Math.floor(Math.random()*CARD_POOL.length)];
+  cardText.textContent=card.text;
+  cardOpts.innerHTML='';
+  ['A','B','C'].forEach(l=>{
+    const b=document.createElement('button');
+    b.className='opt-btn';b.textContent=`${l}. ${card[l]||'Opción omitida'}`;
+    b.onclick=()=>resolveCard(l,card);
+    cardOpts.appendChild(b);
+  });
+  cardModal.classList.remove('hidden');
+}
+
+function resolveCard(c,card){
+  cardModal.classList.add('hidden');
+  const gain=Math.round(TOTAL_COMMISSION*0.15),loss=Math.round(TOTAL_COMMISSION*0.10);
+  if(c===card.correct){
+    playCorrect();
+    state.commission+=gain;
+  }else{
+    playWrong();
+    state.commission=Math.max(0,state.commission-loss);
   }
+  commissionDisp.textContent=formatMoney(state.commission);
+  state.wrongStreak=0;
 }
 
-function showPopup(text) {
-  const p = document.getElementById("popup");
-  document.getElementById("popupText").textContent = text;
-  p.style.display = "block";
+/* FIN DE FASE */
+function finishPhase(){
+  playFanfare();
+  finalModal.classList.remove('hidden');
+  finalSummary.innerHTML=`<p>Comisión final: <b>${formatMoney(state.commission)}</b></p>`;
 }
 
-function closePopup() {
-  document.getElementById("popup").style.display = "none";
-  if (current < questions.length) showQuestion();
-}
-
-document.getElementById("startBtn").onclick = startGame;
+restartBtn.onclick=()=>{
+  finalModal.classList.add('hidden');
+  introSec.classList.remove('hidden');
+  gameSec.classList.add('hidden');
+};
 </script>
 </body>
 </html>
