@@ -5,204 +5,178 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>🌳 GAMA Post Venta — Raíces de Éxito</title>
 <style>
-  :root {
-    --oro: #b98b3b;
-    --cobre: #b66b3a;
-    --beige: #f2eadf;
-    --marfil: #fffaf0;
-    --verde: #2ecc71;
-    --rojo: #e74c3c;
-    font-family: "Segoe UI", Roboto, Arial, sans-serif;
-  }
   body {
-    margin: 0;
-    background: var(--beige);
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #fffaf0;
     color: #3b2f2a;
+    margin: 0;
+    padding: 0;
   }
-  .wrap {
-    max-width: 900px;
-    margin: 20px auto;
+  header {
+    background: #b98b3b;
+    color: white;
+    text-align: center;
+    padding: 16px;
+  }
+  h1 { margin: 0; }
+  main {
+    max-width: 800px;
+    margin: 30px auto;
+    background: white;
+    border: 2px solid #b66b3a;
+    border-radius: 12px;
     padding: 20px;
   }
-  h1, h2 {
-    color: var(--oro);
-  }
-  .card {
-    background: var(--marfil);
-    border: 2px solid var(--cobre);
-    border-radius: 12px;
-    padding: 18px;
-    margin-bottom: 16px;
-  }
-  button {
-    background: var(--oro);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 16px;
-    cursor: pointer;
+  .question {
     font-weight: bold;
+    margin-bottom: 15px;
   }
-  .opt-btn {
+  .options button {
     display: block;
     width: 100%;
-    margin: 6px 0;
     background: #fff;
-    color: #3b2f2a;
-    border: 2px solid var(--cobre);
+    border: 2px solid #b66b3a;
     border-radius: 8px;
     padding: 10px;
-    text-align: left;
+    margin: 6px 0;
+    cursor: pointer;
     font-weight: 600;
   }
-  .opt-btn:hover {
-    background: var(--cobre);
-    color: #fff;
+  .options button:hover {
+    background: #b66b3a;
+    color: white;
   }
-  .good { color: var(--verde); font-weight: bold; }
-  .bad { color: var(--rojo); font-weight: bold; }
-  .hidden { display: none; }
-  .commission {
-    border: 2px solid var(--cobre);
-    border-radius: 8px;
-    padding: 8px 12px;
-    background: var(--marfil);
+  .feedback {
+    margin-top: 12px;
     font-weight: bold;
-    display: inline-block;
   }
-  .modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.4);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  .good { color: #2ecc71; }
+  .bad { color: #e74c3c; }
+  .hidden { display: none; }
+  #finish {
+    text-align: center;
   }
-  .modal-card {
-    background: white;
-    border-radius: 10px;
-    padding: 20px;
-    width: 90%;
-    max-width: 600px;
+  #finish h2 {
+    color: #b66b3a;
   }
+  .btn {
+    background: #b98b3b;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .btn:hover { background: #a87c32; }
 </style>
 </head>
 <body>
-<div class="wrap">
 
-  <section id="intro" class="card">
-    <h1>🌳 Bienvenida a GAMA Post Venta</h1>
-    <p>Simulador SPIN™ — Entrenamiento para asesoras inmobiliarias. Aprende a escuchar, comprender, resolver y cerrar con ética.</p>
-    <p>Objetivo: responder correctamente todas las preguntas y conservar tu comisión.</p>
-    <button id="startBtn">Iniciar Entrenamiento ▶️</button>
-  </section>
+<header>
+  <h1>🌳 GAMA Post Venta</h1>
+  <p>Raíces de Éxito | Simulador SPIN™</p>
+</header>
 
-  <section id="game" class="card hidden">
-    <h2 id="phaseTitle">Fase 1 — SPIN™ Post Venta</h2>
-    <p><b>Comisión:</b> <span id="commissionDisp" class="commission">$0</span></p>
-    <div id="questionText" style="font-weight: bold; margin-top:10px;"></div>
-    <div id="optionsWrap" style="margin-top:10px;"></div>
-    <p id="feedbackArea" style="min-height:30px;margin-top:8px;"></p>
-    <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center;">
-      <button id="nextBtn" disabled>Siguiente ➡️</button>
-      <span id="progressText" style="color:#555;"></span>
-    </div>
-  </section>
-
-  <div id="finalModal" class="modal hidden">
-    <div class="modal-card">
-      <h2>🏁 Resultado del Simulador</h2>
-      <div id="finalSummary"></div>
-      <div style="text-align:right;margin-top:10px;">
-        <button id="restartBtn">Volver a Entrenar 🔁</button>
-      </div>
-    </div>
+<main>
+  <div id="intro">
+    <p>Bienvenida al simulador de Post Venta. Responde correctamente todas las preguntas para completar tu entrenamiento.</p>
+    <button id="start" class="btn">Iniciar Entrenamiento ▶️</button>
   </div>
 
-</div>
+  <div id="quiz" class="hidden">
+    <div id="question-container">
+      <div id="question" class="question"></div>
+      <div id="options" class="options"></div>
+      <div id="feedback" class="feedback"></div>
+    </div>
+    <button id="next" class="btn hidden">Siguiente ➡️</button>
+  </div>
+
+  <div id="finish" class="hidden">
+    <h2>🏁 ¡Entrenamiento completado!</h2>
+    <p>Has respondido correctamente todas las preguntas del módulo Post Venta.</p>
+    <button id="restart" class="btn">Volver a entrenar 🔁</button>
+  </div>
+</main>
 
 <script>
-const TOTAL_COMMISSION = 100000;
-const QUESTIONS = [
-  {text:'¿Qué significa SPIN en ventas?', options:['Situación, Problema, Implicación, Necesidad','Saber, Planear, Invertir, Negociar','Sistema, Proceso, Inversión, Negocio'], correct:'Situación, Problema, Implicación, Necesidad'},
-  {text:'¿Qué harías si un cliente se queja por un retraso?', options:['Lo escuchas y das solución','Lo ignoras','Culpas al banco'], correct:'Lo escuchas y das solución'},
-  {text:'¿Por qué es importante documentar la entrega?', options:['Evita malentendidos y protege ambas partes','Solo para el archivo','Porque lo pide el cliente'], correct:'Evita malentendidos y protege ambas partes'},
-  {text:'¿Qué pasa si no das seguimiento post venta?', options:['Pierdes confianza y futuras ventas','Nada','Ahorras tiempo'], correct:'Pierdes confianza y futuras ventas'},
-  {text:'¿Qué tipo de preguntas te ayudan a descubrir necesidades?', options:['De implicación y necesidad','De producto','De saludo'], correct:'De implicación y necesidad'},
-  {text:'¿Qué deberías hacer si detectas un error en la escritura?', options:['Avisar y resolver con ética','Ocultarlo','Culpar al notario'], correct:'Avisar y resolver con ética'},
-  {text:'¿Cuál es la meta principal de la post venta?', options:['Fidelizar y cuidar la reputación','Vender otra casa','Ahorrar tiempo'], correct:'Fidelizar y cuidar la reputación'},
-  {text:'¿Qué actitud genera confianza en el cliente?', options:['Escuchar activamente','Hablar sin pausa','Prometer sin cumplir'], correct:'Escuchar activamente'},
-  {text:'¿Qué beneficio obtienes al aplicar SPIN?', options:['Cierres más éticos y clientes satisfechos','Más manipulación','Evitar responsabilidad'], correct:'Cierres más éticos y clientes satisfechos'},
-  {text:'¿Qué hacer si fallas en tres respuestas seguidas?', options:['Pausar, reflexionar y retomar','Abandonar','Culpar al sistema'], correct:'Pausar, reflexionar y retomar'}
+const preguntas = [
+  {texto: "¿Qué significa SPIN en ventas?", opciones: ["Situación, Problema, Implicación, Necesidad", "Saber, Planear, Invertir, Negociar", "Sistema, Proceso, Inversión, Negocio"], correcta: 0},
+  {texto: "¿Qué harías si un cliente se queja por un retraso?", opciones: ["Lo escuchas y das solución", "Lo ignoras", "Culpas al banco"], correcta: 0},
+  {texto: "¿Por qué es importante documentar la entrega?", opciones: ["Evita malentendidos y protege ambas partes", "Solo para el archivo", "Porque lo pide el cliente"], correcta: 0},
+  {texto: "¿Qué pasa si no das seguimiento post venta?", opciones: ["Pierdes confianza y futuras ventas", "Nada", "Ahorras tiempo"], correcta: 0},
+  {texto: "¿Qué tipo de preguntas te ayudan a descubrir necesidades?", opciones: ["De implicación y necesidad", "De producto", "De saludo"], correcta: 0},
+  {texto: "¿Qué deberías hacer si detectas un error en la escritura?", opciones: ["Avisar y resolver con ética", "Ocultarlo", "Culpar al notario"], correcta: 0},
+  {texto: "¿Cuál es la meta principal de la post venta?", opciones: ["Fidelizar y cuidar la reputación", "Vender otra casa", "Ahorrar tiempo"], correcta: 0},
+  {texto: "¿Qué actitud genera confianza en el cliente?", opciones: ["Escuchar activamente", "Hablar sin pausa", "Prometer sin cumplir"], correcta: 0},
+  {texto: "¿Qué beneficio obtienes al aplicar SPIN?", opciones: ["Cierres más éticos y clientes satisfechos", "Más manipulación", "Evitar responsabilidad"], correcta: 0},
+  {texto: "¿Qué hacer si fallas en tres respuestas seguidas?", opciones: ["Pausar, reflexionar y retomar", "Abandonar", "Culpar al sistema"], correcta: 0}
 ];
 
-let state = {index:0,commission:0,perQ:0,score:0};
+let indice = 0;
 
-const intro=document.getElementById('intro');
-const game=document.getElementById('game');
-const startBtn=document.getElementById('startBtn');
-const qText=document.getElementById('questionText');
-const optWrap=document.getElementById('optionsWrap');
-const feedback=document.getElementById('feedbackArea');
-const nextBtn=document.getElementById('nextBtn');
-const progress=document.getElementById('progressText');
-const commissionDisp=document.getElementById('commissionDisp');
-const finalModal=document.getElementById('finalModal');
-const finalSummary=document.getElementById('finalSummary');
-const restartBtn=document.getElementById('restartBtn');
+const intro = document.getElementById("intro");
+const quiz = document.getElementById("quiz");
+const finish = document.getElementById("finish");
+const question = document.getElementById("question");
+const options = document.getElementById("options");
+const feedback = document.getElementById("feedback");
+const nextBtn = document.getElementById("next");
+const startBtn = document.getElementById("start");
+const restartBtn = document.getElementById("restart");
 
-startBtn.onclick=()=>{
-  intro.classList.add('hidden');
-  game.classList.remove('hidden');
-  state.index=0;
-  state.commission=0;
-  state.perQ=Math.round(TOTAL_COMMISSION/QUESTIONS.length);
-  renderQuestion();
-};
+startBtn.onclick = iniciar;
+nextBtn.onclick = siguiente;
+restartBtn.onclick = reiniciar;
 
-function renderQuestion(){
-  if(state.index>=QUESTIONS.length){finishGame();return;}
-  const q=QUESTIONS[state.index];
-  qText.textContent=q.text;
-  optWrap.innerHTML='';
-  feedback.textContent='';
-  nextBtn.disabled=true;
-  q.options.forEach(opt=>{
-    const b=document.createElement('button');
-    b.className='opt-btn';
-    b.textContent=opt;
-    b.onclick=()=>handleAnswer(opt,q);
-    optWrap.appendChild(b);
+function iniciar() {
+  intro.classList.add("hidden");
+  quiz.classList.remove("hidden");
+  indice = 0;
+  mostrarPregunta();
+}
+
+function mostrarPregunta() {
+  const p = preguntas[indice];
+  question.textContent = p.texto;
+  options.innerHTML = "";
+  feedback.textContent = "";
+  nextBtn.classList.add("hidden");
+
+  p.opciones.forEach((texto, i) => {
+    const btn = document.createElement("button");
+    btn.textContent = texto;
+    btn.onclick = () => responder(i);
+    options.appendChild(btn);
   });
-  progress.textContent=`Pregunta ${state.index+1} de ${QUESTIONS.length}`;
-  commissionDisp.textContent=`$${state.commission.toLocaleString()}`;
 }
 
-function handleAnswer(opt,q){
-  document.querySelectorAll('.opt-btn').forEach(b=>b.disabled=true);
-  if(opt===q.correct){
-    feedback.innerHTML=`<span class="good">✅ Correcto</span>`;
-    state.commission+=state.perQ;
-  }else{
-    feedback.innerHTML=`<span class="bad">❌ Incorrecto</span> — Respuesta: <b>${q.correct}</b>`;
-    state.commission=Math.max(0,state.commission-state.perQ);
+function responder(seleccion) {
+  const p = preguntas[indice];
+  const correcto = seleccion === p.correcta;
+  feedback.innerHTML = correcto ? `<span class="good">✅ ¡Correcto!</span>` : `<span class="bad">❌ Incorrecto. La respuesta es: ${p.opciones[p.correcta]}</span>`;
+  document.querySelectorAll(".options button").forEach(b => b.disabled = true);
+  nextBtn.classList.remove("hidden");
+}
+
+function siguiente() {
+  indice++;
+  if (indice < preguntas.length) {
+    mostrarPregunta();
+  } else {
+    terminar();
   }
-  commissionDisp.textContent=`$${state.commission.toLocaleString()}`;
-  nextBtn.disabled=false;
 }
 
-nextBtn.onclick=()=>{state.index++;renderQuestion();};
-
-function finishGame(){
-  game.classList.add('hidden');
-  finalModal.classList.remove('hidden');
-  finalSummary.innerHTML=`<p>Comisión final: <b>$${state.commission.toLocaleString()}</b></p>`;
+function terminar() {
+  quiz.classList.add("hidden");
+  finish.classList.remove("hidden");
 }
 
-restartBtn.onclick=()=>{
-  finalModal.classList.add('hidden');
-  intro.classList.remove('hidden');
-};
+function reiniciar() {
+  finish.classList.add("hidden");
+  intro.classList.remove("hidden");
+}
 </script>
 </body>
 </html>
