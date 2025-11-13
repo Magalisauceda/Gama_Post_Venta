@@ -3,25 +3,33 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>GAMA · Postventa (Módulo 4) - GAMA</title>
+<title>GAMA · Postventa (Módulo 4)</title>
 <style>
-:root{--oro:#b98b3b;--cobre:#b66b3a;--beige:#f2eadf;--marfil:#fffaf0;--accent:#3b2f2a;--muted:#6f5f52}
+:root{
+  --oro:#b98b3b; --cobre:#b66b3a; --beige:#f2eadf; --marfil:#fffaf0; --accent:#3b2f2a; --muted:#6f5f52;
+}
 *{box-sizing:border-box}
-body{margin:0;font-family:Inter,Arial,Helvetica,sans-serif;background:var(--marfil);color:var(--accent);min-height:100vh;display:flex;flex-direction:column}
+html,body{height:100%}
+body{
+  margin:0;font-family:Inter,Arial,Helvetica,sans-serif;
+  background:var(--marfil); color:var(--accent);
+  display:flex;flex-direction:column;min-height:100vh;
+}
 header{background:linear-gradient(90deg,var(--oro),var(--cobre));color:#fff;padding:14px 18px;font-weight:700}
-.container{width:100%;max-width:980px;margin:18px auto;padding:12px}
+.container{width:100%;max-width:980px;margin:18px auto;padding:12px;flex:1}
 .card{background:var(--beige);border-radius:14px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,0.07)}
 .h1{font-size:20px;color:var(--accent);margin:0 0 8px}
 .small{color:var(--muted);font-size:14px}
 #contador{color:var(--cobre);font-weight:700;margin-top:12px}
 .options{margin-top:16px}
-.options button{display:block;width:100%;max-width:680px;margin:10px auto;text-align:left;padding:12px 14px;border-radius:10px;border:2px solid var(--cobre);background:#fff;cursor:pointer;font-size:16px}
+.options button{display:block;width:100%;max-width:760px;margin:10px auto;text-align:left;padding:12px 14px;border-radius:10px;border:2px solid var(--cobre);background:#fff;cursor:pointer;font-size:16px}
 .options button:hover{background:linear-gradient(90deg,#fff,#f7f2ea)}
 .progress{margin-top:12px;color:var(--muted)}
-.popup{display:none;position:fixed;left:50%;top:18%;transform:translateX(-50%);background:#fff;padding:18px;border-radius:12px;border:2px solid var(--oro);box-shadow:0 12px 40px rgba(0,0,0,0.14);width:90%;max-width:420px;z-index:120}
+.popup{display:none;position:fixed;left:50%;top:18%;transform:translateX(-50%);background:#fff;padding:18px;border-radius:12px;border:2px solid var(--oro);box-shadow:0 12px 40px rgba(0,0,0,0.14);width:90%;max-width:540px;z-index:120}
 .center{display:flex;flex-direction:column;align-items:center;gap:8px}
 .footer{background:var(--oro);color:#fff;padding:10px;text-align:center;font-size:13px}
 .hidden{display:none}
+.badge{display:inline-block;background:#fff;padding:6px 10px;border-radius:20px;border:2px solid var(--cobre);font-weight:600;color:var(--cobre);margin-left:8px}
 @media(min-width:720px){.options button{max-width:700px}}
 </style>
 </head>
@@ -29,21 +37,24 @@ header{background:linear-gradient(90deg,var(--oro),var(--cobre));color:#fff;padd
 <header>🌳 GAMA · Seguimiento Postventa — Módulo 4</header>
 
 <main class="container">
-  <div class="card" id="welcome">
+  <!-- Bienvenida -->
+  <div class="card" id="welcomeCard" aria-live="polite">
     <div class="h1">Bienvenida — Seguimiento Postventa</div>
-    <div class="small">Instrucciones: haz <strong>un clic</strong> para activar sonido. Responde cada pregunta; tendrás tiempo por pregunta. Usa los popups para leer feedback y continuar.</div>
+    <div class="small">Instrucciones: haz <strong>un clic</strong> en la página para activar el audio. Pulsa <strong>Iniciar ejercicio</strong> y responde cada pregunta. El objetivo: alcanzar 100% de aciertos. Si no llegas, podrás repetir hasta lograrlo.</div>
     <div style="margin-top:14px" class="center">
       <button id="startBtn">🎧 Iniciar ejercicio</button>
-      <div id="contador" class="small">Tiempo: <span id="timeLabel">30</span>s</div>
+      <div id="contador" class="small">Tiempo por pregunta: <span id="timeLabel">30</span>s <span class="badge" id="progressBadge">0 / 0</span></div>
     </div>
   </div>
 
-  <div class="card hidden" id="game">
-    <div id="qwrap"></div>
+  <!-- Juego -->
+  <div class="card hidden" id="gameCard">
+    <div id="qwrap" aria-live="polite"></div>
     <div class="progress small">Progreso: <span id="progress">0 / 0</span></div>
   </div>
 </main>
 
+<!-- Popup -->
 <div class="popup" id="popup" role="dialog" aria-modal="true" aria-hidden="true">
   <div id="popupText" class="small"></div>
   <div style="margin-top:12px;text-align:right">
@@ -87,48 +98,68 @@ const S = {
 S.music.loop = true; S.tiktak.loop = true;
 S.music.volume = 0.55; S.tiktak.volume = 0.35;
 
-/* ---------- preguntas (editar si quieres) ---------- */
+/* ---------------- PREGUNTAS (Postventa - Módulo 4) --------------- 
+   Son 10 preguntas pensadas en cronograma, NPS, pipeline, referidos, métricas y postventa.
+   Puedes editar las preguntas aquí directamente si quieres cambiar texto.
+*/
 const PREG = [
-  { q:"¿Qué significa SPIN en ventas?", 
-    options:["Situación, Problema, Implicación, Necesidad","Saber, Planear, Invertir, Negociar","Sistema, Proceso, Inversión, Negocio"], correct:0, explain:"SPIN = Situación, Problema, Implicación, Necesidad." },
-  { q:"¿Qué mide el NPS?", 
-    options:["Nivel de Promoción y Satisfacción","Net Promoter Score o Nivel de Recomendación","Negociación Profesional de Servicio"], correct:1, explain:"NPS mide la probabilidad de recomendación (1-10)." },
-  { q:"¿Qué es un pipeline en ventas?",
-    options:["Sistema para visualizar en qué etapa está cada cliente","Documento de escritura pública","Lista de precios"], correct:0, explain:"Pipeline = flujo/etapas del proceso de venta." }
+  { q:"¿Cuál es el objetivo del cronograma postventa?", 
+    options:["Organizar contactos con propósito y fechas","Llamar cuando te acuerdes","Enviar promociones sin filtro"], correct:0, explain:"Cada contacto tiene un objetivo (reafirmar compra, resolver dudas, preparar referido)." },
+  { q:"¿Qué es lo que mide el NPS (Net Promoter Score)?",
+    options:["Probabilidad de recomendación del cliente","Satisfacción con el precio","Velocidad del trámite"], correct:0, explain:"NPS mide la recomendación: 9-10 promotores, 7-8 pasivos, 1-6 detractores." },
+  { q:"¿Por qué es importante medir satisfacción con preguntas profesionales?",
+    options:["Para obtener información útil y mejorar procesos","Para decir 'todo bien' y ya","Para cerrar ventas inmediatas sin feedback"], correct:0, explain:"Preguntas abiertas + escalas dan datos accionables." },
+  { q:"¿Qué es un pipeline en ventas?", 
+    options:["Un sistema para visualizar las etapas de cada cliente","Un tipo de contrato","Una herramienta contable"], correct:0, explain:"Pipeline = etapas y acciones necesarias para avanzar prospectos." },
+  { q:"¿Cuándo es buen momento para solicitar referidos?", 
+    options:["Cuando el cliente demuestra satisfacción real","Antes de la firma","Al primer contacto sin medir satisfacción"], correct:0, explain:"Pedir referidos a promotores maximiza éxito." },
+  { q:"¿Qué indicadores pueden usarse como métricas postventa?", 
+    options:["NPS, tasa de referidos, % de satisfacción y tasa de respuesta","Solo ventas","Solo visitas"], correct:0, explain:"Métricas permiten evaluar y mejorar el proceso." },
+  { q:"¿Qué se busca al identificar nuevas oportunidades con clientes actuales?", 
+    options:["Detectar cambios de vida o económicos que generen nuevas necesidades","Presionar para vender más","Ignorar al cliente una vez firmado"], correct:0, explain:"Cambios personales (bodas, hijos, negocio) generan nuevas ventas." },
+  { q:"¿Qué herramienta facilita el seguimiento organizado?", 
+    options:["CRM con plantillas y automatizaciones","Notas aisladas en papel","Mensajes improvisados en chats"], correct:0, explain:"CRM + automatización evita olvidos y permite medir resultados." },
+  { q:"¿Qué hacer si un cliente está en 7-8 en la escala NPS?", 
+    options:["Preguntar '¿Qué tendría que pasar para que fuera un 10?'","Ignorarlo","Mandar publicidad sin contacto"], correct:0, explain:"Esa pregunta revela mejoras concretas para convertirlo en promotor." },
+  { q:"¿Cuál es el valor de un seguimiento postventa profesional?", 
+    options:["Fidelizar clientes, generar referidos y detectar nuevas ventas","Aumentar trabajo sin resultados","Solo cumplir trámites"], correct:0, explain:"Un buen seguimiento multiplica oportunidades y retención." }
 ];
 
+/* estado */
 let idx = 0, score = 0;
 let questionTimer = null, timeLeft = 30;
 
 /* DOM */
 const startBtn = document.getElementById('startBtn');
-const welcome = document.getElementById('welcome');
-const game = document.getElementById('game');
+const welcomeCard = document.getElementById('welcomeCard');
+const gameCard = document.getElementById('gameCard');
 const qwrap = document.getElementById('qwrap');
 const popup = document.getElementById('popup');
 const popupText = document.getElementById('popupText');
 const popupBtn = document.getElementById('popupBtn');
 const timeLabel = document.getElementById('timeLabel');
 const progress = document.getElementById('progress');
+const progressBadge = document.getElementById('progressBadge');
 const contadorEl = document.getElementById('contador');
 
-/* set progress initial */
-progress.textContent = `${idx+1} / ${PREG.length}`;
+/* init display values */
+progress.textContent = `0 / ${PREG.length}`;
+progressBadge.textContent = `0 / ${PREG.length}`;
 
-/* ensure audio can play after first user interaction */
-function ensureAudioOnFirstInteraction(){
+/* asegurar que el primer click permita audio */
+function allowAudioOnFirstClick(){
   document.body.addEventListener('click', function once(){
-    S.music.play().catch(()=>{/* bloqueado, OK */});
+    S.music.play().catch(()=>{/* bloqueo posible */});
     document.body.removeEventListener('click', once);
   }, { once:true });
 }
 
-/* start */
+/* START */
 startBtn.addEventListener('click', ()=>{
-  ensureAudioOnFirstInteraction();
+  allowAudioOnFirstClick();
   S.music.play().catch(()=>{});
-  welcome.classList.add('hidden');
-  game.classList.remove('hidden');
+  welcomeCard.classList.add('hidden');
+  gameCard.classList.remove('hidden');
   idx = 0; score = 0;
   renderQuestion();
 });
@@ -137,19 +168,22 @@ startBtn.addEventListener('click', ()=>{
 function renderQuestion(){
   clearInterval(questionTimer);
   S.tiktak.currentTime = 0;
-  timeLeft = 30; timeLabel.textContent = timeLeft;
+  timeLeft = 30;
+  timeLabel.textContent = timeLeft;
   S.tiktak.play().catch(()=>{});
   const P = PREG[idx];
   progress.textContent = `${idx+1} / ${PREG.length}`;
+  progressBadge.textContent = `${idx+1} / ${PREG.length}`;
   qwrap.innerHTML = `
-    <div class="card" style="padding:14px;">
+    <div class="card" style="padding:14px">
       <h2>${P.q}</h2>
       <div class="options" id="optionsWrap">
         ${P.options.map((o,i)=>`<button data-i="${i}" onclick="selectOption(${i})">${String.fromCharCode(65+i)}) ${o}</button>`).join('')}
       </div>
+      <div style="margin-top:12px" class="small">Progreso: ${idx+1} / ${PREG.length} — Puntos: ${score}</div>
     </div>
   `;
-  // contador
+  // contador por pregunta
   questionTimer = setInterval(()=>{
     timeLeft--; timeLabel.textContent = timeLeft;
     if(timeLeft <= 5) contadorEl.style.color = 'var(--cobre)';
@@ -162,11 +196,10 @@ function renderQuestion(){
   },1000);
 }
 
-/* handle selection */
+/* select option (llamado por onclick) */
 function selectOption(sel){
-  // disable buttons to avoid double clicks
   const btns = document.querySelectorAll('#optionsWrap button');
-  btns.forEach(b=>b.disabled = true);
+  btns.forEach(b=>b.disabled=true);
   clearInterval(questionTimer);
   S.tiktak.pause();
   S.pop.play().catch(()=>{});
@@ -188,42 +221,61 @@ function showPopup(text, positive){
   popup.dataset.positive = positive ? '1' : '0';
   popup.style.display = 'block';
   popup.setAttribute('aria-hidden','false');
-  // focus the button so user can press Enter
   popupBtn.focus();
 }
 
-/* close popup and control flow */
+/* close popup y control de flujo */
 function closePopup(){
   popup.style.display = 'none';
   popup.setAttribute('aria-hidden','true');
   const positive = popup.dataset.positive === '1';
   if(positive){
     idx++;
-    // small delay so user perceives feedback
     if(idx < PREG.length){
       setTimeout(renderQuestion, 450);
       return;
     } else {
-      // finished
+      // terminó el ciclo: si score == total -> 100% perfecto, si no -> pedir repetir hasta lograr 100%
       S.music.pause();
-      S.fanfarrea.play().catch(()=>{ S.aplausos.play().catch(()=>{}); });
-      qwrap.innerHTML = `<div class="card"><h2>🎉 ¡Has completado el módulo con éxito!</h2><p class="small">Puntuación: ${score} / ${PREG.length}</p></div>`;
+      // Reproducir fanfarria y aplausos si fue perfecto
+      if(score === PREG.length){
+        S.fanfarrea.play().catch(()=>{ S.aplausos.play().catch(()=>{}); });
+        qwrap.innerHTML = `<div class="card"><h2>🎉 ¡Perfecto! Alcanzaste 100%.</h2><p class="small">Puntuación: ${score} / ${PREG.length}</p><div style="margin-top:12px"><button onclick="restart()">Volver a jugar</button></div></div>`;
+      } else {
+        // si no fue perfecto, mostrar mensaje y botón para reintentar (reset conservando aprendizaje)
+        S.bonus.play().catch(()=>{});
+        qwrap.innerHTML = `<div class="card"><h2>🌿 Buen intento — aún no es 100%</h2><p class="small">Puntuación: ${score} / ${PREG.length}</p><p class="small">Repite hasta alcanzar 100% para certificar la práctica.</p><div style="margin-top:12px"><button onclick="retry()">Reintentar módulo</button></div></div>`;
+      }
       return;
     }
   } else {
-    // repeat same question
+    // repetir misma pregunta
     setTimeout(renderQuestion, 300);
   }
 }
 
-/* connect popup button */
+/* retry: volver a empezar desde la primera pregunta con score a 0 */
+function retry(){
+  idx = 0; score = 0;
+  S.music.play().catch(()=>{});
+  renderQuestion();
+}
+
+/* restart: opción cuando ya llegó a 100% y quiere repetir */
+function restart(){
+  idx = 0; score = 0;
+  S.music.play().catch(()=>{});
+  renderQuestion();
+}
+
+/* conectar popupBtn */
 popupBtn.addEventListener('click', closePopup);
 
-/* expose selectOption globally (onclick uses it) */
+/* exponer selectOption por si algo inline lo llama */
 window.selectOption = selectOption;
 
-/* prepare first-interaction audio allowance */
-ensureAudioOnFirstInteraction();
+/* permitir audio en primer clic (navegadores) */
+allowAudioOnFirstClick();
 </script>
 </body>
 </html>
