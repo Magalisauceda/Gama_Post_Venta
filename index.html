@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>🌳 GAMA Post Venta — Raíces de Éxito</title>
 <style>
   body {
@@ -27,10 +27,7 @@
     border-radius: 12px;
     padding: 20px;
   }
-  .question {
-    font-weight: bold;
-    margin-bottom: 15px;
-  }
+  .question { font-weight: bold; margin-bottom: 15px; }
   .options button {
     display: block;
     width: 100%;
@@ -41,24 +38,15 @@
     margin: 6px 0;
     cursor: pointer;
     font-weight: 600;
+    transition: 0.2s;
   }
-  .options button:hover {
-    background: #b66b3a;
-    color: white;
-  }
-  .feedback {
-    margin-top: 12px;
-    font-weight: bold;
-  }
+  .options button:hover { background: #b66b3a; color: white; }
+  .feedback { margin-top: 12px; font-weight: bold; }
   .good { color: #2ecc71; }
   .bad { color: #e74c3c; }
   .hidden { display: none; }
-  #finish {
-    text-align: center;
-  }
-  #finish h2 {
-    color: #b66b3a;
-  }
+  #finish { text-align: center; }
+  #finish h2 { color: #b66b3a; }
   .btn {
     background: #b98b3b;
     color: white;
@@ -74,13 +62,13 @@
 
 <header>
   <h1>🌳 GAMA Post Venta</h1>
-  <p>Raíces de Éxito | Simulador SPIN™</p>
+  <p>Raíces de Éxito | Simulador Ético SPIN™</p>
 </header>
 
 <main>
   <div id="intro">
-    <p>Bienvenida al simulador de Post Venta. Responde correctamente todas las preguntas para completar tu entrenamiento.</p>
-    <button id="start" class="btn">Iniciar Entrenamiento ▶️</button>
+    <p>Bienvenida al simulador de Post Venta. Escucha las instrucciones y responde cada pregunta para alcanzar el 100%.</p>
+    <button id="start" class="btn">▶️ Iniciar Entrenamiento</button>
   </div>
 
   <div id="quiz" class="hidden">
@@ -89,32 +77,37 @@
       <div id="options" class="options"></div>
       <div id="feedback" class="feedback"></div>
     </div>
-    <button id="next" class="btn hidden">Siguiente ➡️</button>
+    <button id="next" class="btn hidden">➡️ Siguiente</button>
   </div>
 
   <div id="finish" class="hidden">
-    <h2>🏁 ¡Entrenamiento completado!</h2>
+    <h2>🎊 ¡Entrenamiento completado!</h2>
     <p>Has respondido correctamente todas las preguntas del módulo Post Venta.</p>
-    <button id="restart" class="btn">Volver a entrenar 🔁</button>
+    <button id="restart" class="btn">🔁 Volver a entrenar</button>
   </div>
 </main>
 
 <script>
+/* ==== SONIDOS SIMPLES ==== */
+const soundCorrect = new Audio("https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg");
+const soundWrong   = new Audio("https://actions.google.com/sounds/v1/cartoon/boing.ogg");
+const soundStart   = new Audio("https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg");
+
+/* ==== PREGUNTAS ==== */
 const preguntas = [
   {texto: "¿Qué significa SPIN en ventas?", opciones: ["Situación, Problema, Implicación, Necesidad", "Saber, Planear, Invertir, Negociar", "Sistema, Proceso, Inversión, Negocio"], correcta: 0},
-  {texto: "¿Qué harías si un cliente se queja por un retraso?", opciones: ["Lo escuchas y das solución", "Lo ignoras", "Culpas al banco"], correcta: 0},
-  {texto: "¿Por qué es importante documentar la entrega?", opciones: ["Evita malentendidos y protege ambas partes", "Solo para el archivo", "Porque lo pide el cliente"], correcta: 0},
+  {texto: "¿Qué harías si un cliente se queja por un retraso?", opciones: ["Escucharlo y resolver", "Ignorarlo", "Culpar a otro"], correcta: 0},
+  {texto: "¿Por qué es importante documentar la entrega?", opciones: ["Evita malentendidos y protege ambas partes", "Solo para archivo", "Porque lo pide el cliente"], correcta: 0},
   {texto: "¿Qué pasa si no das seguimiento post venta?", opciones: ["Pierdes confianza y futuras ventas", "Nada", "Ahorras tiempo"], correcta: 0},
-  {texto: "¿Qué tipo de preguntas te ayudan a descubrir necesidades?", opciones: ["De implicación y necesidad", "De producto", "De saludo"], correcta: 0},
+  {texto: "¿Qué tipo de preguntas descubren necesidades?", opciones: ["De implicación y necesidad", "De producto", "De saludo"], correcta: 0},
   {texto: "¿Qué deberías hacer si detectas un error en la escritura?", opciones: ["Avisar y resolver con ética", "Ocultarlo", "Culpar al notario"], correcta: 0},
   {texto: "¿Cuál es la meta principal de la post venta?", opciones: ["Fidelizar y cuidar la reputación", "Vender otra casa", "Ahorrar tiempo"], correcta: 0},
   {texto: "¿Qué actitud genera confianza en el cliente?", opciones: ["Escuchar activamente", "Hablar sin pausa", "Prometer sin cumplir"], correcta: 0},
-  {texto: "¿Qué beneficio obtienes al aplicar SPIN?", opciones: ["Cierres más éticos y clientes satisfechos", "Más manipulación", "Evitar responsabilidad"], correcta: 0},
+  {texto: "¿Qué beneficio obtienes al aplicar SPIN?", opciones: ["Cierres éticos y clientes felices", "Más manipulación", "Evitar responsabilidad"], correcta: 0},
   {texto: "¿Qué hacer si fallas en tres respuestas seguidas?", opciones: ["Pausar, reflexionar y retomar", "Abandonar", "Culpar al sistema"], correcta: 0}
 ];
 
 let indice = 0;
-
 const intro = document.getElementById("intro");
 const quiz = document.getElementById("quiz");
 const finish = document.getElementById("finish");
@@ -129,7 +122,9 @@ startBtn.onclick = iniciar;
 nextBtn.onclick = siguiente;
 restartBtn.onclick = reiniciar;
 
+/* ==== FUNCIONES ==== */
 function iniciar() {
+  soundStart.play();
   intro.classList.add("hidden");
   quiz.classList.remove("hidden");
   indice = 0;
@@ -154,8 +149,11 @@ function mostrarPregunta() {
 function responder(seleccion) {
   const p = preguntas[indice];
   const correcto = seleccion === p.correcta;
-  feedback.innerHTML = correcto ? `<span class="good">✅ ¡Correcto!</span>` : `<span class="bad">❌ Incorrecto. La respuesta es: ${p.opciones[p.correcta]}</span>`;
+  feedback.innerHTML = correcto
+    ? `<span class="good">✅ ¡Correcto!</span>`
+    : `<span class="bad">❌ Incorrecto. La respuesta correcta es: ${p.opciones[p.correcta]}</span>`;
   document.querySelectorAll(".options button").forEach(b => b.disabled = true);
+  correcto ? soundCorrect.play() : soundWrong.play();
   nextBtn.classList.remove("hidden");
 }
 
@@ -178,5 +176,6 @@ function reiniciar() {
   intro.classList.remove("hidden");
 }
 </script>
+
 </body>
 </html>
